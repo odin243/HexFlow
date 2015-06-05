@@ -57,8 +57,8 @@
     <Reference Include="System.EnterpriseServices" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="hexnode.js" />
-    <Content Include="vector.js" />
+    <Content Include="Scripts\hex.js" />
+    <Content Include="Scripts\hexGrid.js" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
