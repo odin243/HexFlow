@@ -57,8 +57,10 @@
     <Reference Include="System.EnterpriseServices" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="index.html" />
     <Content Include="Scripts\hex.js" />
     <Content Include="Scripts\hexGrid.js" />
+    <Content Include="Scripts\tests.js" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
