@@ -1,31 +1,5 @@
 ﻿window.HF = window.HF || {};
 
-HF.hexDirections = [
-    HF.hex(1, 0, -1),
-    HF.hex(1, -1, 0),
-    HF.hex(0, -1, 1),
-    HF.hex(-1, 0, 1),
-    HF.hex(-1, 1, 0),
-    HF.hex(0, 1, -1)
-];
-
-HF.hexDirection = function (directionIndex) {
-    return HF.hexDirections[directionIndex];
-}
-
-HF.hexDiagonals = [
-    HF.hex(2, -1, -1),
-    HF.hex(1, -2, 1),
-    HF.hex(-1, -1, 2),
-    HF.hex(-2, 1, 1),
-    HF.hex(-1, 2, -1),
-    HF.hex(1, 1, -2)
-];
-
-HF.hexDiagonal = function(diagonalIndex) {
-    return HF.hexDiagonals[diagonalIndex];
-}
-
 HF.hex = function (q, r, s) {
     var hex = HF.hex;
     return {
@@ -54,7 +28,7 @@ HF.hex = function (q, r, s) {
         },
 
         length: function() {
-            return Math.trunc((Math.abs(this.q) + Math.abs(this.r) + Math.abs(this.s)) / 2);
+            return Math.floor((Math.abs(this.q) + Math.abs(this.r) + Math.abs(this.s)) / 2);
         },
 
         distance: function(otherHex) {
@@ -62,9 +36,9 @@ HF.hex = function (q, r, s) {
         },
 
         round: function() {
-            var q = Math.trunc(Math.round(this.q));
-            var r = Math.trunc(Math.round(this.r));
-            var s = Math.trunc(Math.round(this.s));
+            var q = Math.floor(Math.round(this.q));
+            var r = Math.floor(Math.round(this.r));
+            var s = Math.floor(Math.round(this.s));
             var qDiff = Math.abs(q - this.q);
             var rDiff = Math.abs(r - this.r);
             var sDiff = Math.abs(s - this.s);
@@ -96,4 +70,30 @@ HF.hex = function (q, r, s) {
             return results;
         }
     }
+}
+
+HF.hexDirections = [
+    HF.hex(1, 0, -1),
+    HF.hex(1, -1, 0),
+    HF.hex(0, -1, 1),
+    HF.hex(-1, 0, 1),
+    HF.hex(-1, 1, 0),
+    HF.hex(0, 1, -1)
+];
+
+HF.hexDirection = function (directionIndex) {
+    return HF.hexDirections[directionIndex];
+}
+
+HF.hexDiagonals = [
+    HF.hex(2, -1, -1),
+    HF.hex(1, -2, 1),
+    HF.hex(-1, -1, 2),
+    HF.hex(-2, 1, 1),
+    HF.hex(-1, 2, -1),
+    HF.hex(1, 1, -2)
+];
+
+HF.hexDiagonal = function (diagonalIndex) {
+    return HF.hexDiagonals[diagonalIndex];
 }
