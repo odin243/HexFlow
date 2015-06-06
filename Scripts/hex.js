@@ -36,23 +36,23 @@ HF.hex = function (q, r, s) {
         },
 
         round: function() {
-            var q = Math.floor(Math.round(this.q));
-            var r = Math.floor(Math.round(this.r));
-            var s = Math.floor(Math.round(this.s));
-            var qDiff = Math.abs(q - this.q);
-            var rDiff = Math.abs(r - this.r);
-            var sDiff = Math.abs(s - this.s);
+            var roundedQ = Math.floor(Math.round(this.q));
+            var roundedR = Math.floor(Math.round(this.r));
+            var roundedS = Math.floor(Math.round(this.s));
+            var qDiff = Math.abs(roundedQ - this.q);
+            var rDiff = Math.abs(roundedR - this.r);
+            var sDiff = Math.abs(roundedS - this.s);
             if (qDiff > rDiff && qDiff > sDiff)
             {
-                q = -r - s;
+                roundedQ = -roundedR - roundedS;
             } else if (rDiff > sDiff)
             {
-                r = -q - s;
+                roundedR = -roundedQ - roundedS;
             } else
             {
-                s = -q - r;
+                roundedS = -roundedQ - roundedR;
             }
-            return hex(q, r, s);
+            return hex(roundedQ, roundedR, roundedS);
         },
 
         lerp: function(otherHex, t) {
@@ -69,9 +69,8 @@ HF.hex = function (q, r, s) {
             }
             return results;
         }
-    }
-}
-
+    };
+};
 HF.hexDirections = [
     HF.hex(1, 0, -1),
     HF.hex(1, -1, 0),
@@ -83,7 +82,9 @@ HF.hexDirections = [
 
 HF.hexDirection = function (directionIndex) {
     return HF.hexDirections[directionIndex];
-}
+};
+
+HF.nullDirection = HF.hex(0, 0, 0);
 
 HF.hexDiagonals = [
     HF.hex(2, -1, -1),
@@ -96,4 +97,4 @@ HF.hexDiagonals = [
 
 HF.hexDiagonal = function (diagonalIndex) {
     return HF.hexDiagonals[diagonalIndex];
-}
+};
