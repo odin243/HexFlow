@@ -4,13 +4,13 @@ HF namespace - represents the totality of the game project. Any code written spe
 	//q - distance in the upper-right direction from the origin
 	//r - distance in the upper-left direction from the origin
 	//s - distance in the down from the origin
-	HF.point(int q, int r, int s)
+	HF.point(double q, double r, double s)
 	{
 		//Returns an object representing a point, adding supplied coordinates to the point's existing coordinates.
 		//q - distance in the upper-right direction from the origin
 		//r - distance in the upper-left direction from the origin
 		//s - distance in the down from the origin
-		HF.point.add(int q, int r, int s)
+		HF.point.add(double q, double r, double s)
 		
 		//Returns an object representing a point, adding supplied point's coordinates to this point's existing coordinates.
 		//otherPoint - point whose coordinates to add to this point's coordinates
@@ -20,6 +20,26 @@ HF namespace - represents the totality of the game project. Any code written spe
 		HF.point.invert()
 	}
 	
-	
+	//Static class
+	HF.directions
+	{
+		//Map of unit distances along the six hexagonal faces. Uses HF.point()
+		//ur =  1,  0, -1 -- upper right
+		//ul =  0,  1, -1 -- upper left
+		//l  = -1,  1,  0 -- left
+		//ll = -1,  0,  1 -- lower left
+		//lr =  0, -1,  1 -- lower right
+		//r  =  1, -1,  0 -- right
+		HF.directions.face[]
+		
+		//Map of unit distances along the six primary directions. Uses HF.point()
+		//q  =  1  ,  -0.5, -0.5
+		//r  = -0.5,   1  , -0.5    
+		//s  = -0.5,  -0.5,  1 
+		//qr =  0.5,   0.5, -1 
+		//qs =  0.5,  -1  ,  0.5
+		//rs = -1  ,   0.5,  0.5
+		HF.directions.unit[]
+	}
 	
 }
