@@ -1,0 +1,25 @@
+HF namespace - represents the totality of the game project. Any code written specifically for this project goes here.
+{
+	//Returns an object representing a point.
+	//q - distance in the upper-right direction from the origin
+	//r - distance in the upper-left direction from the origin
+	//s - distance in the down from the origin
+	HF.point(int q, int r, int s)
+	{
+		//Returns an object representing a point, adding supplied coordinates to the point's existing coordinates.
+		//q - distance in the upper-right direction from the origin
+		//r - distance in the upper-left direction from the origin
+		//s - distance in the down from the origin
+		HF.point.add(int q, int r, int s)
+		
+		//Returns an object representing a point, adding supplied point's coordinates to this point's existing coordinates.
+		//otherPoint - point whose coordinates to add to this point's coordinates
+		HF.point.addPoint(HF.point otherPoint)
+		
+		//Returns an object representing a point, whose coordinates are this point's coordinates inverted. Represents a reflection across the origin. 		
+		HF.point.invert()
+	}
+	
+	
+	
+}
