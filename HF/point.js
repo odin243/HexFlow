@@ -14,9 +14,14 @@
             return this.add(otherPoint.q, otherPoint.r, otherPoint.s);
         },
 
+        scale = function (scalar)
+        {
+            return HF.point(this.q * scalar, this.r * scalar, this.s * scalar)
+        }
+
         invert = function ()
         {
-            return HF.point(-this.q, -this.r, -this.s);
+            return this.scale(-1);
         }
     };
 };

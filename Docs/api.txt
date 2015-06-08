@@ -15,6 +15,10 @@ HF namespace - represents the totality of the game project. Any code written spe
 		//Returns an object representing a point, adding supplied point's coordinates to this point's existing coordinates.
 		//otherPoint - point whose coordinates to add to this point's coordinates
 		HF.point.addPoint(HF.point otherPoint)
+				
+		//Scales a point by the supplied factor. Returns result as a HF.point
+		//scalar - value to scale by
+		HF.point.scale(double scalar)
 		
 		//Returns an object representing a point, whose coordinates are this point's coordinates inverted. Represents a reflection across the origin. 		
 		HF.point.invert()
