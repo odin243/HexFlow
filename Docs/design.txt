@@ -1,0 +1,35 @@
+coordinate - {int, int, int}
+	directions[6]
+
+vector - {coordinate, double}
+	vector math
+
+player - model
+	color - color
+	
+tile - model
+	power - double
+	owner - player
+	direction - vector
+	location - coordinate
+
+grid - model
+	map - {string, tile}
+	getIdentifier(coordinate) = return string.concat(coordinate.x, "_", coordinate.y, "_", coordinate.z)
+	getTile(coordinate) = return map[getIdentifier(coordinate)]
+		
+scene - view
+	thisGrid - grid
+	update() - next frame in scene
+	screenToCoordinate()
+	
+engine - model
+	players - player[]
+	??? - game state stuff, like progress?
+	loadLevel()
+	mainLoop()
+	
+game - view
+
+
+	Things to figure out... click-drag-release
