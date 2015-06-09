@@ -1,4 +1,7 @@
-﻿HF.directions =
+﻿//HF Namespace
+HF = this.HF != undefined ? this.HF : {};
+
+HF.directions =
 {
     face: 
     {
