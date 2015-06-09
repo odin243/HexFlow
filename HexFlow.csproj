@@ -19,7 +19,6 @@
     <IISExpressAnonymousAuthentication />
     <IISExpressWindowsAuthentication />
     <IISExpressUseClassicPipelineMode />
-    <UseGlobalApplicationHostFile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -59,7 +58,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="HF\hexPoint.js" />
-    <Content Include="HF\tests.js" />
     <Content Include="index.html" />
     <Content Include="HF\directions.js" />
     <Content Include="HF\vector.js" />
