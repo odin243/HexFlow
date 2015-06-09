@@ -56,3 +56,4 @@ HexFlow.v11.suo
 bin/HexFlow.dll.config
 /packages/d3.3.5.5/content/Scripts/d3
 /packages/d3.3.5.5
+*.suo
