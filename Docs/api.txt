@@ -46,4 +46,13 @@ HF namespace - represents the totality of the game project. Any code written spe
 		HF.directions.unit[]
 	}
 	
+	//Returns an object representing a vector.
+	//location - Relative direction. Should always be a single unit (IE, all positive components sum to 1, all negative components sum to -1).
+	//magnitude - min = 0, max = double.max. Represents abstract magnitude.
+	HF.vector(HF.point location, double magnitude)
+	{
+		//Adds passed in HF.vector to this vector, returns result as a HF.vector
+		//otherVector - HF.vector to add
+		HF.vector.add(HF.vector otherVector)
+	}
 }
