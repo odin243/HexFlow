@@ -58,20 +58,15 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="index.html" />
-    <Content Include="Scripts\d3\d3.js" />
-    <Content Include="Scripts\d3\d3.min.js" />
-    <Content Include="Scripts\diagram.js" />
-    <Content Include="Scripts\node.js" />
-    <Content Include="Scripts\hex.js" />
-    <Content Include="Scripts\hexGrid.js" />
-    <Content Include="Scripts\tests.js" />
+    <Content Include="HF\directions.js" />
+    <Content Include="HF\point.js" />
+    <Content Include="HF\vector.js" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Scripts\d3\LICENSE" />
     <Content Include="packages.config" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -79,6 +74,9 @@
     <None Include="Web.Release.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Scripts\" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
