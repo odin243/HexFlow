@@ -40,7 +40,7 @@ HF.vector = function (direction, magnitude)
             checkComponent(combinedPath.s);
 
             //Use magnitude from whichever directionality (positive or negative) has more components
-            var newMagnitude = positiveComponents > negativeComponents ? positiveMagnitude : -negativeComponents;
+            var newMagnitude = positiveComponents > negativeComponents ? positiveMagnitude : -negativeMagnitude;
 
             //Step 2: Divide combined path by new magnitude
             //If magnitude is 0, use zero direction
