@@ -44,7 +44,7 @@ HF.vector = function (direction, magnitude)
 
             //Step 2: Divide combined path by new magnitude
             //If magnitude is 0, use zero direction
-            var newDirection = newMagnitude != 0 ? combinedPath.scale(1 / newMagnitude) : HF.point(0, 0, 0);
+            var newDirection = newMagnitude != 0 ? combinedPath.scale(1 / newMagnitude) : HF.hexPoint(0, 0, 0);
 
             //Step 3: Ensure q + r + s = 0
             //Floating point math can cause increasing disparagement if unchecked, let's stop it here. 

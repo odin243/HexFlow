@@ -4,30 +4,30 @@ HF namespace - represents the totality of the game project. Any code written spe
 	//q - distance in the upper-right direction from the origin
 	//r - distance in the upper-left direction from the origin
 	//s - distance in the down from the origin
-	HF.point(double q, double r, double s)
+	HF.hexPoint(double q, double r, double s)
 	{
 		//Returns an object representing a point, adding supplied coordinates to the point's existing coordinates.
 		//q - distance in the upper-right direction from the origin
 		//r - distance in the upper-left direction from the origin
 		//s - distance in the down from the origin
-		HF.point.add(double q, double r, double s)
+		HF.hexPoint.add(double q, double r, double s)
 		
 		//Returns an object representing a point, adding supplied point's coordinates to this point's existing coordinates.
 		//otherPoint - point whose coordinates to add to this point's coordinates
-		HF.point.addPoint(HF.point otherPoint)
+		HF.hexPoint.addPoint(HF.hexPoint otherPoint)
 				
-		//Scales a point by the supplied factor. Returns result as a HF.point
+		//Scales a point by the supplied factor. Returns result as a HF.hexPoint
 		//scalar - value to scale by
-		HF.point.scale(double scalar)
+		HF.hexPoint.scale(double scalar)
 		
 		//Returns an object representing a point, whose coordinates are this point's coordinates inverted. Represents a reflection across the origin. 		
-		HF.point.invert()
+		HF.hexPoint.invert()
 	}
 	
 	//Static class
 	HF.directions
 	{
-		//Map of unit distances along the six hexagonal faces. Uses HF.point()
+		//Map of unit distances along the six hexagonal faces. Uses HF.hexPoint()
 		//ur =  1,  0, -1 -- upper right
 		//ul =  0,  1, -1 -- upper left
 		//l  = -1,  1,  0 -- left
@@ -36,7 +36,7 @@ HF namespace - represents the totality of the game project. Any code written spe
 		//r  =  1, -1,  0 -- right
 		HF.directions.face[]
 		
-		//Map of unit distances along the six primary directions. Uses HF.point()
+		//Map of unit distances along the six primary directions. Uses HF.hexPoint()
 		//q  =  1  ,  -0.5, -0.5
 		//r  = -0.5,   1  , -0.5    
 		//s  = -0.5,  -0.5,  1 
@@ -49,7 +49,7 @@ HF namespace - represents the totality of the game project. Any code written spe
 	//Returns an object representing a vector.
 	//location - Relative direction. Should always be a single unit (IE, all positive components sum to 1, all negative components sum to -1).
 	//magnitude - min = 0, max = double.max. Represents abstract magnitude.
-	HF.vector(HF.point location, double magnitude)
+	HF.vector(HF.hexPoint location, double magnitude)
 	{
 		//Adds passed in HF.vector to this vector, returns result as a HF.vector
 		//otherVector - HF.vector to add

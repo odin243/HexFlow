@@ -1,7 +1,7 @@
 ﻿//HF Namespace
 HF = this.HF != undefined ? this.HF : {};
 
-HF.point = function (q, r, s)
+HF.hexPoint = function (q, r, s)
 {
     return {
         q: q,
@@ -9,7 +9,7 @@ HF.point = function (q, r, s)
         s: s,
 
         add: function (q, r, s) {
-            return HF.point(this.q + q, this.r + r, this.s + s);
+            return HF.hexPoint(this.q + q, this.r + r, this.s + s);
         },
 
         addPoint: function (otherPoint) {
@@ -18,7 +18,7 @@ HF.point = function (q, r, s)
 
         scale: function (scalar)
         {
-            return HF.point(this.q * scalar, this.r * scalar, this.s * scalar)
+            return HF.hexPoint(this.q * scalar, this.r * scalar, this.s * scalar)
         },
 
         invert: function ()
