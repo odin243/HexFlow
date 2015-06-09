@@ -16,9 +16,8 @@ HF.hexPoint = function (q, r, s)
             return this.add(otherPoint.q, otherPoint.r, otherPoint.s);
         },
 
-        scale: function (scalar)
-        {
-            return HF.hexPoint(this.q * scalar, this.r * scalar, this.s * scalar)
+        scale: function (scalar) {
+            return HF.hexPoint(this.q * scalar, this.r * scalar, this.s * scalar);
         },
 
         invert: function ()
