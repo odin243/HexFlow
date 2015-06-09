@@ -22,6 +22,12 @@ HF namespace - represents the totality of the game project. Any code written spe
 		
 		//Returns an object representing a point, whose coordinates are this point's coordinates inverted. Represents a reflection across the origin. 		
 		HF.hexPoint.invert()
+
+		//Creates a new HF.hexPoint object with the same values
+		HF.hexPoint.duplicate()
+
+		//Ensures that q + r + s = 0. Returns resulting HF.hexPoint
+		HF.hexPoint.validate()
 	}
 	
 	//Static class

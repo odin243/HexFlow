@@ -12,12 +12,10 @@ HF.vector = function (direction, magnitude)
             var thisPath = this.direction.scale(this.magnitude);
             var otherPath = otherVector.direction.scale(otherVector.magnitude);
 
-            var combinedPath = thisPath.addPoint(otherPath);
+            var combinedPath = thisPath.add(otherPath);
             
             //Here's the fun part. Find the unit vector and the magnitude. Not too hard.
             //Step 1: Add up the positive and negative components separately
-            //Track number of positive amd negative components.
-            //(Consider 0 positive here for our purposes)
             var positiveMagnitude = 0;
             var negativeMagnitude = 0;
             var positiveComponents = 0;
@@ -47,29 +45,9 @@ HF.vector = function (direction, magnitude)
             var newDirection = newMagnitude != 0 ? combinedPath.scale(1 / newMagnitude) : HF.hexPoint(0, 0, 0);
 
             //Step 3: Ensure q + r + s = 0
-            //Floating point math can cause increasing disparagement if unchecked, let's stop it here. 
-            //Set the odd directionality to the inverse of the sum of it's brethren
-            var sumAndInvert = function (val1, val2) { return -1 * (val1 + val2)};
-            if (positiveComponents > negativeComponents)
-            {
-                if (newDirection.q < 0)
-                    newDirection.q = sumAndInvert(newDirection.r, newDirection.s);
-                if (newDirection.r < 0)
-                    newDirection.r = sumAndInvert(newDirection.q, newDirection.s);
-                if (newDirection.s < 0)
-                    newDirection.s = sumAndInvert(newDirection.q, newDirection.r);
-            }
-            else
-            {
-                if (newDirection.q > 0)
-                    newDirection.q = sumAndInvert(newDirection.r, newDirection.s);
-                if (newDirection.r > 0)
-                    newDirection.r = sumAndInvert(newDirection.q, newDirection.s);
-                if (newDirection.s > 0)
-                    newDirection.s = sumAndInvert(newDirection.q, newDirection.r);
-            }
+            newDirection = newDirection.validate();
 
             return HF.vector(newDirection, newMagnitude);
-        }
+        }        
     };
 }
