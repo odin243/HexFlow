@@ -34,7 +34,7 @@ HF.directions = {
     },
 
     faceByIndex: function(faceIndex) {
-        return faceDirections[faceIndex];
+        return this.faceDirections[faceIndex];
     },
 
     axis: 
