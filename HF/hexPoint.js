@@ -113,7 +113,7 @@ HF.hexPoint.fromString = function (coordinates)
 
     var coordinateArray = coordinates.split("_");
 
-    if (coordinateArray.length != 3 || isNaN(coordinateArray[0]) || isNaN(coordinateArray[1]) ||isNaN(coordinateArray[2]))
+    if (coordinateArray.length !== 3 || isNaN(coordinateArray[0]) || isNaN(coordinateArray[1]) ||isNaN(coordinateArray[2]))
     {
         console.error("HF.hexPoint.fromString - invalid argument - returning null");
         return null;
