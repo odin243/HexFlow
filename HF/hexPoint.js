@@ -95,7 +95,7 @@ HF.hexPoint = function (q, r, s)
 
         toString: function ()
         {
-            return q + "_" + r + "_" + s;
+            return this.q + "_" + this.r + "_" + this.s;
         }
     };
 };
