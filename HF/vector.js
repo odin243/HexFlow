@@ -25,11 +25,9 @@ HF.vector = function (direction, magnitude)
 
             var combinedPath = thisPath.add(otherPath);
             
-            var newMagnitude = (Math.abs(combinedPath.q) + Math.abs(combinedPath.r) + Math.abs(combinedPath.s))/2;
-            var newDirection = newMagnitude != 0 ? combinedPath.scale(1 / newMagnitude) : HF.hexPoint(0, 0, 0);
+            var newMagnitude = combinedPath.length();
 
-            //Ensure q + r + s = 0
-            newDirection = newDirection.validate();
+            var newDirection = HF.directions.fromPoint(combinedPath);
 
             return HF.vector(newDirection, newMagnitude);
         }

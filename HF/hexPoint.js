@@ -49,48 +49,51 @@ HF.hexPoint = function (q, r, s)
             return HF.hexPoint(this.q * scalar, this.r * scalar, this.s * scalar);
         },
 
+        subtract: function(otherPoint) {
+            return this.add(otherPoint.invert());
+        },
+
         invert: function ()
         {
             return this.scale(-1);
         },
 
-        duplicate: function ()
-        {
-            return HF.hexPoint(this.q, this.r, this.s);
+        length: function() {
+            return (Math.abs(this.q) + Math.abs(this.r) + Math.abs(this.s))/2;
         },
 
         validate: function ()
         {
             //Nothing to validate if all are 0
-            if (this.q == 0 && this.r == 0 && this.s == 0)
+            if (this.q === 0 && this.r === 0 && this.s === 0)
                 return this;
 
-            var newPoint = this.duplicate();
+            var newQ = this.q, newR = this.r, newS = this.s;
 
-            if (Math.abs(newPoint.q) > Math.abs(newPoint.r))
+            if (Math.abs(newQ) > Math.abs(newR))
             {
-                if (Math.abs(newPoint.q) > Math.abs(newPoint.s))
+                if (Math.abs(newQ) > Math.abs(newS))
                 {
-                    newPoint.q = -newPoint.r - newPoint.s;
+                    newQ = -newR - newS;
                 }
                 else
                 {
-                    newPoint.s = -newPoint.q - newPoint.r;
+                    newS = -newQ - newR;
                 }
             }
             else
             {
-                if (Math.abs(newPoint.r) > Math.abs(newPoint.s))
+                if (Math.abs(newR) > Math.abs(newS))
                 {
-                    newPoint.r = -newPoint.q - newPoint.s;
+                    newR = -newQ - newS;
                 }
                 else
                 {
-                    newPoint.s = -newPoint.q - newPoint.r;
+                    newS = -newQ - newR;
                 }
             }
 
-            return newPoint;
+            return HF.hexPoint(newQ, newR, newS);
         },
 
         toString: function ()
