@@ -58,6 +58,7 @@
     <Reference Include="System.EnterpriseServices" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="HF\config.js" />
     <Content Include="HF\engine.js" />
     <Content Include="HF\hexPoint.js" />
     <Content Include="HF\hexTile.js" />
