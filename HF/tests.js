@@ -1,5 +1,5 @@
 ﻿//HF Namespace
-HF = this.HF != undefined ? this.HF : {};
+window.HF = window.HF || {};
 
 //Singleton
 HF.tests = function () {
