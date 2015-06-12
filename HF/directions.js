@@ -3,12 +3,12 @@ window.HF = window.HF || {};
 
 HF.directions = {
     faceDirections: [
-        HF.hexPoint( 1,  0, -1),
-        HF.hexPoint( 1, -1,  0),
-        HF.hexPoint( 0, -1,  1),
-        HF.hexPoint(-1,  0,  1),
-        HF.hexPoint( 0,  1, -1),
-        HF.hexPoint(-1,  1,  0)
+        HF.hexPoint(1, 0, -1),
+        HF.hexPoint(1, -1, 0),
+        HF.hexPoint(0, -1, 1),
+        HF.hexPoint(-1, 0, 1),
+        HF.hexPoint(0, 1, -1),
+        HF.hexPoint(-1, 1, 0)
     ],
 
     indexToFace: [
@@ -29,21 +29,23 @@ HF.directions = {
         'l': 5
     },
 
-    face: function (faceString) {
+    face: function(faceString)
+    {
         return this.faceDirections[this.faceToIndex[faceString]];
     },
 
-    faceByIndex: function(faceIndex) {
+    faceByIndex: function(faceIndex)
+    {
         return this.faceDirections[faceIndex];
     },
 
-    axis: 
+    axis:
     {
-        'q' : HF.hexPoint( 1  ,  -0.5, -0.5),
-        'r' : HF.hexPoint(-0.5,   1  , -0.5),
-        's' : HF.hexPoint(-0.5,  -0.5,  1  ),
-        'qr': HF.hexPoint( 0.5,   0.5, -1  ),
-        'qs': HF.hexPoint( 0.5,  -1  ,  0.5),
-        'rs': HF.hexPoint(-1  ,   0.5,  0.5)
+        'q': HF.hexPoint(1, -0.5, -0.5),
+        'r': HF.hexPoint(-0.5, 1, -0.5),
+        's': HF.hexPoint(-0.5, -0.5, 1),
+        'qr': HF.hexPoint(0.5, 0.5, -1),
+        'qs': HF.hexPoint(0.5, -1, 0.5),
+        'rs': HF.hexPoint(-1, 0.5, 0.5)
     }
 };

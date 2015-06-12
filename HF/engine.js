@@ -4,12 +4,14 @@ window.HF = window.HF || {};
 //The engine object handles the main game loop, which updates the game state and causes new scenes to be rendered.
 //The constructor takes in the current game state, and the list of players
 //NOTE: This is a MUTABLE object! The current game state changes on each run of the loop! It should not be referenced from this object EVER
-HF.engine = function(gameState, players) {
+HF.engine = function(gameState, players)
+{
     return {
         currentState: gameState,
         players: players,
         //run is the main game loop
-        run: function() {
+        run: function()
+        {
             //Step 1:
             //Apply the queued inputs of all players to the current state.
             //This will create a list of update objects

@@ -5,7 +5,7 @@ HF.vector = function(direction, magnitude)
 {
     if (magnitude != undefined && isNaN(magnitude))
     {
-        console.error("HF.vector - invalid argument - returning null");
+        console.error('HF.vector - invalid argument - returning null');
         return null;
     }
 
@@ -17,7 +17,7 @@ HF.vector = function(direction, magnitude)
         {
             if (otherVector == undefined)
             {
-                console.error("HF.vector.add - invalid argument - returning null");
+                console.error('HF.vector.add - invalid argument - returning null');
                 return null;
             }
 
@@ -56,7 +56,7 @@ HF.vector = function(direction, magnitude)
             return dispersedVectors;
         },
 
-        //This method returns the "affinity" this vector has with the given face.
+        //This method returns the 'affinity' this vector has with the given face.
         affinityWithFace: function(faceIndex)
         {
             //var dispersionRate = HF.config.flowDisperseRate;
@@ -70,4 +70,4 @@ HF.vector = function(direction, magnitude)
             return differenceFactor;
         }
     };
-}
+};

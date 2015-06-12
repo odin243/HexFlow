@@ -1,11 +1,11 @@
 ﻿//HF Namespace
 window.HF = window.HF || {};
 
-HF.hexPoint = function (q, r, s)
+HF.hexPoint = function(q, r, s)
 {
     if ((q != undefined && isNaN(q)) ||
-        (r != undefined && isNaN(r)) ||
-        (s != undefined && isNaN(s)))
+    (r != undefined && isNaN(r)) ||
+    (s != undefined && isNaN(s)))
     {
         console.error("HF.hexPoint - invalid arguments - returning null");
         return null;
@@ -16,7 +16,7 @@ HF.hexPoint = function (q, r, s)
         r: r || 0,
         s: s || 0,
 
-        addCoordinates: function (q, r, s)
+        addCoordinates: function(q, r, s)
         {
             if ((q == undefined || isNaN(q)) || (r == undefined || isNaN(r)) || (s == undefined || isNaN(s)))
             {
@@ -27,7 +27,7 @@ HF.hexPoint = function (q, r, s)
             return HF.hexPoint(this.q + q, this.r + r, this.s + s);
         },
 
-        add: function (otherPoint)
+        add: function(otherPoint)
         {
             if (otherPoint == undefined)
             {
@@ -38,7 +38,7 @@ HF.hexPoint = function (q, r, s)
             return this.addCoordinates(otherPoint.q, otherPoint.r, otherPoint.s);
         },
 
-        scale: function (scalar)
+        scale: function(scalar)
         {
             if (scalar == undefined || isNaN(scalar))
             {
@@ -49,7 +49,7 @@ HF.hexPoint = function (q, r, s)
             return HF.hexPoint(this.q * scalar, this.r * scalar, this.s * scalar);
         },
 
-        subtract: function (otherPoint)
+        subtract: function(otherPoint)
         {
             if (otherPoint == undefined)
             {
@@ -60,14 +60,14 @@ HF.hexPoint = function (q, r, s)
             return this.add(otherPoint.invert());
         },
 
-        invert: function ()
+        invert: function()
         {
             return this.scale(-1);
         },
 
-        length: function ()
+        length: function()
         {
-            return (Math.abs(this.q) + Math.abs(this.r) + Math.abs(this.s))/2;
+            return (Math.abs(this.q) + Math.abs(this.r) + Math.abs(this.s)) / 2;
         },
 
         //This method returns the point on the unit circle which intersects the path from the origin.
@@ -80,7 +80,7 @@ HF.hexPoint = function (q, r, s)
             return direction;
         },
 
-        validate: function ()
+        validate: function()
         {
             //Nothing to validate if all are 0
             if (this.q === 0 && this.r === 0 && this.s === 0)
@@ -114,14 +114,14 @@ HF.hexPoint = function (q, r, s)
             return HF.hexPoint(newQ, newR, newS);
         },
 
-        toString: function ()
+        toString: function()
         {
             return this.q + "_" + this.r + "_" + this.s;
         }
     };
 };
 
-HF.hexPoint.fromString = function (coordinates)
+HF.hexPoint.fromString = function(coordinates)
 {
     if (coordinates == undefined)
     {
@@ -131,7 +131,7 @@ HF.hexPoint.fromString = function (coordinates)
 
     var coordinateArray = coordinates.split("_");
 
-    if (coordinateArray.length !== 3 || isNaN(coordinateArray[0]) || isNaN(coordinateArray[1]) ||isNaN(coordinateArray[2]))
+    if (coordinateArray.length !== 3 || isNaN(coordinateArray[0]) || isNaN(coordinateArray[1]) || isNaN(coordinateArray[2]))
     {
         console.error("HF.hexPoint.fromString - invalid argument - returning null");
         return null;

@@ -1,11 +1,11 @@
 ﻿//HF Namespace
 window.HF = window.HF || {};
 
-HF.hexTile = function (location)
+HF.hexTile = function(location)
 {
     if (location == undefined)
     {
-        console.error("HF.hexTile - invalid argument - returning null");
+        console.error('HF.hexTile - invalid argument - returning null');
         return null;
     }
 
@@ -20,9 +20,8 @@ HF.hexTile = function (location)
             return location.toString();
         },
 
-        calcEffectOnNeighbors: function ()
+        calcEffectOnNeighbors: function()
         {
-
         }
     };
 }
