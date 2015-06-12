@@ -124,7 +124,7 @@ HF.tests = function()
 
         tileUpdateTest: function()
         {
-            var tile = HF.hexTile(HF.hexPoint(0, 0, 0), 10, HF.vector(HF.hexPoint(1, 1, -2).toUnit(), 5), "player1");
+            var tile = HF.hexTile(HF.hexPoint(0, 0, 0), 21, HF.vector(HF.directions.face('ur'), 21), "player1");
             var updates = tile.calcEffectOnNeighbors();
             for (var i = 0; i < updates.length; i++)
             {

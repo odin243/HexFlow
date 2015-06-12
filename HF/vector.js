@@ -65,7 +65,7 @@ HF.vector = function(direction, magnitude)
 
             var differenceFromFace = this.direction.subtract(face).length();
 
-            var differenceFactor = 1 / differenceFromFace;
+            var differenceFactor = (HF.config.flowDispersionConstant - differenceFromFace) / 2;
 
             return differenceFactor;
         }

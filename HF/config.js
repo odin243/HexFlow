@@ -5,7 +5,7 @@ window.HF = window.HF || {};
 HF.config = function()
 {
     return {
-        //This is the percentage of flow that will disperse to each of the two adjacent directions
-        flowDisperseRate: 0.15435
+        //Minimum value of 2. Higher values cause more dispersion
+        flowDispersionConstant: 2.3
     };
 }();
