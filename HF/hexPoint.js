@@ -49,7 +49,14 @@ HF.hexPoint = function (q, r, s)
             return HF.hexPoint(this.q * scalar, this.r * scalar, this.s * scalar);
         },
 
-        subtract: function(otherPoint) {
+        subtract: function (otherPoint)
+        {
+            if (otherPoint == undefined)
+            {
+                console.error("HF.hexPoint.subtract - invalid argument - returning null");
+                return null;
+            }
+
             return this.add(otherPoint.invert());
         },
 
@@ -58,7 +65,8 @@ HF.hexPoint = function (q, r, s)
             return this.scale(-1);
         },
 
-        length: function() {
+        length: function ()
+        {
             return (Math.abs(this.q) + Math.abs(this.r) + Math.abs(this.s))/2;
         },
 
