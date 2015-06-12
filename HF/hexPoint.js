@@ -7,7 +7,7 @@ HF.hexPoint = function(q, r, s)
     (r != undefined && isNaN(r)) ||
     (s != undefined && isNaN(s)))
     {
-        console.error("HF.hexPoint - invalid arguments - returning null");
+        console.error('HF.hexPoint - invalid arguments - returning null');
         return null;
     }
 
@@ -20,7 +20,7 @@ HF.hexPoint = function(q, r, s)
         {
             if ((q == undefined || isNaN(q)) || (r == undefined || isNaN(r)) || (s == undefined || isNaN(s)))
             {
-                console.error("HF.hexPoint.addCoordinates - invalid arguments - returning null");
+                console.error('HF.hexPoint.addCoordinates - invalid arguments - returning null');
                 return null;
             }
 
@@ -31,7 +31,7 @@ HF.hexPoint = function(q, r, s)
         {
             if (otherPoint == undefined)
             {
-                console.error("HF.hexPoint.add - invalid argument - returning null");
+                console.error('HF.hexPoint.add - invalid argument - returning null');
                 return null;
             }
 
@@ -42,7 +42,7 @@ HF.hexPoint = function(q, r, s)
         {
             if (scalar == undefined || isNaN(scalar))
             {
-                console.error("HF.hexPoint.scale - invalid argument - returning null");
+                console.error('HF.hexPoint.scale - invalid argument - returning null');
                 return null;
             }
 
@@ -53,7 +53,7 @@ HF.hexPoint = function(q, r, s)
         {
             if (otherPoint == undefined)
             {
-                console.error("HF.hexPoint.subtract - invalid argument - returning null");
+                console.error('HF.hexPoint.subtract - invalid argument - returning null');
                 return null;
             }
 
@@ -116,7 +116,7 @@ HF.hexPoint = function(q, r, s)
 
         toString: function()
         {
-            return this.q + "_" + this.r + "_" + this.s;
+            return this.q + '_' + this.r + '_' + this.s;
         }
     };
 };
@@ -125,15 +125,15 @@ HF.hexPoint.fromString = function(coordinates)
 {
     if (coordinates == undefined)
     {
-        console.error("HF.hexPoint.fromString - missing argument - returning null");
+        console.error('HF.hexPoint.fromString - missing argument - returning null');
         return null;
     }
 
-    var coordinateArray = coordinates.split("_");
+    var coordinateArray = coordinates.split('_');
 
     if (coordinateArray.length !== 3 || isNaN(coordinateArray[0]) || isNaN(coordinateArray[1]) || isNaN(coordinateArray[2]))
     {
-        console.error("HF.hexPoint.fromString - invalid argument - returning null");
+        console.error('HF.hexPoint.fromString - invalid argument - returning null');
         return null;
     }
 
