@@ -30,7 +30,7 @@ HF.directions = {
     },
 
     face: function (faceString) {
-        return faceDirections[faceToIndex[faceString]];
+        return this.faceDirections[this.faceToIndex[faceString]];
     },
 
     faceByIndex: function(faceIndex) {
