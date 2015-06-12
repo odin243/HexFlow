@@ -16,6 +16,7 @@ HF.tests = function()
             this.defaultVectorTest();
             this.vectorAdditionTest();
             this.vectorDispersionTest();
+            this.tileUpdateTest();
         },
 
         complain: function(name)
@@ -119,6 +120,17 @@ HF.tests = function()
                 Debug.writeln(dispersedVector.direction.toString() + ': ' + dispersedVector.magnitude);
             }
             Debug.writeln('dispersed magnitude: ' + magnitude);
+        },
+
+        tileUpdateTest: function()
+        {
+            var tile = HF.hexTile(HF.hexPoint(0, 0, 0), 10, HF.vector(HF.hexPoint(1, 1, -2).toUnit(), 5), "player1");
+            var updates = tile.calcEffectOnNeighbors();
+            for (var i = 0; i < updates.length; i++)
+            {
+                var update = updates[i];
+                Debug.writeln(update.location.toString() + ' ' + update.power);
+            }
         }
     };
 }();

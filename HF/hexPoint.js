@@ -114,6 +114,29 @@ HF.hexPoint = function(q, r, s)
             return HF.hexPoint(newQ, newR, newS);
         },
 
+        round: function()
+        {
+            var roundedQ = Math.floor(Math.round(this.q));
+            var roundedR = Math.floor(Math.round(this.r));
+            var roundedS = Math.floor(Math.round(this.s));
+            var qDiff = Math.abs(roundedQ - this.q);
+            var rDiff = Math.abs(roundedR - this.r);
+            var sDiff = Math.abs(roundedS - this.s);
+            if (qDiff > rDiff && qDiff > sDiff)
+            {
+                roundedQ = -roundedR - roundedS;
+            }
+            else if (rDiff > sDiff)
+            {
+                roundedR = -roundedQ - roundedS;
+            }
+            else
+            {
+                roundedS = -roundedQ - roundedR;
+            }
+            return HF.hexPoint(roundedQ, roundedR, roundedS);
+        },
+
         toString: function()
         {
             return this.q + '_' + this.r + '_' + this.s;
