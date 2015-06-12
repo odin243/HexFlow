@@ -50,7 +50,7 @@ HF.directions = {
     //This method takes a point and scales it to a unit direction
     fromPoint: function(point) {
         var magnitude = point.length();
-        var direction = point.scale(1 / magnitude);
+        var direction = magnitude != 0 ? point.scale(1 / magnitude) : HF.hexPoint();
         direction = direction.validate();
         return direction;
     }
