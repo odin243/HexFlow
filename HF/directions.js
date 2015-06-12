@@ -45,13 +45,5 @@ HF.directions = {
         'qr': HF.hexPoint( 0.5,   0.5, -1  ),
         'qs': HF.hexPoint( 0.5,  -1  ,  0.5),
         'rs': HF.hexPoint(-1  ,   0.5,  0.5)
-    },
-
-    //This method takes a point and scales it to a unit direction
-    fromPoint: function(point) {
-        var magnitude = point.length();
-        var direction = magnitude != 0 ? point.scale(1 / magnitude) : HF.hexPoint();
-        direction = direction.validate();
-        return direction;
     }
 };

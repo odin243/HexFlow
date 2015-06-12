@@ -13,6 +13,7 @@ HF.tests = function() {
             this.directionTest();
             this.defaultVectorTest();
             this.vectorAdditionTest();
+            this.vectorDispersionTest();
         },
 
         complain: function(name) {
@@ -65,7 +66,6 @@ HF.tests = function() {
             this.hexPointEqual("hex_direction", HF.hexPoint(0, -1, 1), HF.directions.faceByIndex(2));
         },
 
-
         defaultVectorTest: function() {
             Debug.writeln("defaultVectorTest");
             var v1 = HF.vector();
@@ -94,6 +94,21 @@ HF.tests = function() {
             Debug.writeln("magnitude: " + v3.magnitude);
 
             Debug.writeln("");
+        },
+
+        vectorDispersionTest: function()
+        {
+            var p1 = HF.hexPoint(1, 1, -2).toUnit();
+            var v1 = HF.vector(p1, 10);
+            var dispersedV1 = v1.disperse();
+            var magnitude = 0;
+            for (var i = 0; i < dispersedV1.length; i++)
+            {
+                var dispersedVector = dispersedV1[i];
+                magnitude += dispersedVector.magnitude;
+                Debug.writeln(dispersedVector.direction.toString() + ": " + dispersedVector.magnitude);
+            }
+            Debug.writeln("dispersed magnitude: " + magnitude);
         }
     };
 }();

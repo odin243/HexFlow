@@ -70,6 +70,16 @@ HF.hexPoint = function (q, r, s)
             return (Math.abs(this.q) + Math.abs(this.r) + Math.abs(this.s))/2;
         },
 
+        //This method returns the point on the unit circle which intersects the path from the origin.
+        //I.e. the end of the unit direction vector towards this point
+        toUnit: function()
+        {
+            var magnitude = this.length();
+            var direction = magnitude !== 0 ? this.scale(1 / magnitude) : HF.hexPoint();
+            direction = direction.validate();
+            return direction;
+        },
+
         validate: function ()
         {
             //Nothing to validate if all are 0
