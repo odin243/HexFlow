@@ -140,6 +140,11 @@ HF.hexPoint = function(q, r, s)
         toString: function()
         {
             return this.q + '_' + this.r + '_' + this.s;
+        },
+
+        equals: function (point)
+        {
+            return this.q == point.q && this.r == point.r && this.s == point.s;
         }
     };
 };

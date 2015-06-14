@@ -3,30 +3,30 @@ window.HF = window.HF || {};
 
 HF.directions = {
     faceDirections: [
-        HF.hexPoint(1, 0, -1),
-        HF.hexPoint(1, -1, 0),
-        HF.hexPoint(0, -1, 1),
-        HF.hexPoint(-1, 0, 1),
-        HF.hexPoint(0, 1, -1),
-        HF.hexPoint(-1, 1, 0)
+        HF.hexPoint( 1, -1,  0),
+        HF.hexPoint( 1,  0, -1),
+        HF.hexPoint( 0,  1, -1),
+        HF.hexPoint(-1,  1,  0),
+        HF.hexPoint(-1,  0,  1),
+        HF.hexPoint( 0, -1,  1)
     ],
 
     indexToFace: [
-        'ur',
         'r',
-        'lr',
-        'll',
+        'ur',
         'ul',
-        'l'
+        'l',
+        'll',
+        'lr'
     ],
 
     faceToIndex: {
-        'ur': 0,
-        'r': 1,
-        'lr': 2,
-        'll': 3,
-        'ul': 4,
-        'l': 5
+        'r' : 0,
+        'ur': 1,
+        'ul': 2,
+        'l' : 3,
+        'll': 4,
+        'lr': 5
     },
 
     face: function(faceString)

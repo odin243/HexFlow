@@ -37,37 +37,175 @@ HF.vector = function(direction, magnitude)
         //The total magnitude of the dispersed vectors will (approximately) equal the magnitude of this vector
         disperse: function()
         {
+            var primaryFace = this.findFirstFace();
+            var primaryAffinity = this.affinityWithFace(primaryFace);
+
+            var secondaryFace = this.findSecondFace();
+            var secondaryAffinity = this.affinityWithFace(secondaryFace);
+
+            var forward = 1;
+            var frontSides = forward * HF.config.flowDispersionConstant;
+            var backSides = frontSides * HF.config.flowDispersionConstant;
+            var back = backSides * HF.config.flowDispersionConstant;
+
+            var totalDispersion = forward + (2 * frontSides) + (2 * backSides) + back;
+
+            forward = forward / totalDispersion;
+            frontSides = frontSides / totalDispersion;
+            backSides = backSides / totalDispersion;
+            back = back / totalDispersion;
+
+
+            var indexOfPrimary;
+            var indexOfSecondary;
             var numFaces = HF.directions.faceDirections.length;
+
+            for (var i = 0; i < numFaces; i++)
+            {
+                var face = HF.directions.faceDirections[i];
+                if (primaryFace.equals(face))
+                    indexOfPrimary = i;
+                if (secondaryFace.equals(face))
+                    indexOfSecondary = i;
+            }
 
             var dispersedVectors = [];
 
-            var totalAffinity = 0;
-            for (var i = 0; i < numFaces; i++)
-            {
-                totalAffinity += this.affinityWithFace(i);
-            }
-
             for (i = 0; i < numFaces; i++)
             {
-                var dispersedMagnitude = this.magnitude * this.affinityWithFace(i) / totalAffinity;
-                dispersedVectors.push(HF.vector(HF.directions.faceByIndex(i), dispersedMagnitude));
+                var distanceFromPrimary = Math.min(Math.abs(i - indexOfPrimary), Math.abs(6 - (i - indexOfPrimary)));
+                var distanceFromSecondary = Math.min(Math.abs(i - indexOfSecondary), Math.abs(6 - (i - indexOfSecondary)));
+
+                var primaryResult;
+                if (distanceFromPrimary == 0)
+                    primaryResult = forward;
+                else if (distanceFromPrimary == 1)
+                    primaryResult = frontSides;
+                else if (distanceFromPrimary == 2)
+                    primaryResult = backSides;
+                else
+                    primaryResult = back;
+
+                primaryResult = primaryResult * primaryAffinity;
+
+                var secondaryResult;
+                if (distanceFromSecondary == 0)
+                    secondaryResult = forward;
+                else if (distanceFromSecondary == 1)
+                    secondaryResult = frontSides;
+                else if (distanceFromSecondary == 2)
+                    secondaryResult = backSides;
+                else
+                    secondaryResult = back;
+
+                secondaryResult = secondaryResult * secondaryAffinity;
+
+                var combinedResult = (primaryResult + secondaryResult) * this.magnitude;
+
+                dispersedVectors.push(HF.vector(HF.directions.faceByIndex(i), combinedResult));
             }
 
             return dispersedVectors;
         },
 
         //This method returns the 'affinity' this vector has with the given face.
-        affinityWithFace: function(faceIndex)
+        affinityWithFace: function(face)
         {
-            //var dispersionRate = HF.config.flowDisperseRate;
-
-            var face = HF.directions.faceByIndex(faceIndex);
-
             var differenceFromFace = this.direction.subtract(face).length();
 
-            var differenceFactor = (HF.config.flowDispersionConstant - differenceFromFace) / 2;
+            return differenceFromFace;
+        },
 
-            return differenceFactor;
+        findFirstFace: function ()
+        {
+            if (this.direction.q == 1)
+            {
+                if (this.direction.r > this.direction.s)
+                    return HF.directions.face('ur');
+                else
+                    return HF.directions.face('r');
+            }
+            if (this.direction.r == 1)
+            {
+                if (this.direction.s > this.direction.q)
+                    return HF.directions.face('l');
+                else
+                    return HF.directions.face('ul');
+            }
+            if (this.direction.s == 1)
+            {
+                if (this.direction.q > this.direction.r)
+                    return HF.directions.face('lr');
+                else
+                    return HF.directions.face('ll');
+            }
+            if (this.direction.q == -1)
+            {
+                if (this.direction.r > this.direction.s)
+                    return HF.directions.face('ll');
+                else
+                    return HF.directions.face('l');
+            }
+            if (this.direction.r == -1)
+            {
+                if (this.direction.s > this.direction.q)
+                    return HF.directions.face('r');
+                else
+                    return HF.directions.face('lr');
+            }
+            if (this.direction.s == -1)
+            {
+                if (this.direction.q > this.direction.r)
+                    return HF.directions.face('ur');
+                else
+                    return HF.directions.face('ul');
+            }
+        },
+
+        findSecondFace: function ()
+        {
+            if (this.direction.q == 1)
+            {
+                if (this.direction.r > this.direction.s)
+                    return HF.directions.face('r');
+                else
+                    return HF.directions.face('ur');
+            }
+            if (this.direction.r == 1)
+            {
+                if (this.direction.s > this.direction.q)
+                    return HF.directions.face('ul');
+                else
+                    return HF.directions.face('l');
+            }
+            if (this.direction.s == 1)
+            {
+                if (this.direction.q > this.direction.r)
+                    return HF.directions.face('ll');
+                else
+                    return HF.directions.face('lr');
+            }
+            if (this.direction.q == -1)
+            {
+                if (this.direction.r > this.direction.s)
+                    return HF.directions.face('l');
+                else
+                    return HF.directions.face('ll');
+            }
+            if (this.direction.r == -1)
+            {
+                if (this.direction.s > this.direction.q)
+                    return HF.directions.face('lr');
+                else
+                    return HF.directions.face('r');
+            }
+            if (this.direction.s == -1)
+            {
+                if (this.direction.q > this.direction.r)
+                    return HF.directions.face('ul');
+                else
+                    return HF.directions.face('ur');
+            }
         }
     };
 };

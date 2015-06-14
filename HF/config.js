@@ -5,7 +5,7 @@ window.HF = window.HF || {};
 HF.config = function()
 {
     return {
-        //Minimum value of 2. Higher values cause more dispersion
-        flowDispersionConstant: 2.3
+        //0 to 1; 0 represents no dispersion, 1 represents complete dispersion.
+        flowDispersionConstant: .2
     };
 }();
