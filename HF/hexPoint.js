@@ -82,32 +82,35 @@ HF.hexPoint = function(q, r, s)
             if (this.q === 0 && this.r === 0 && this.s === 0)
                 return this;
 
-            var newQ = this.q, newR = this.r, newS = this.s;
-
-            if (Math.abs(newQ) > Math.abs(newR))
+            var absQ = Math.abs(this.q), absR = Math.abs(this.r), absS = Math.abs(this.s);
+            var absCoords = { 'q': absQ, 'r': absR, 's': absS };
+            var biggestValue = 0;
+            var biggestThing = 'q';
+            for (var coord in absCoords)
             {
-                if (Math.abs(newQ) > Math.abs(newS))
-                {
-                    newQ = -newR - newS;
-                }
-                else
-                {
-                    newS = -newQ - newR;
-                }
-            }
-            else
-            {
-                if (Math.abs(newR) > Math.abs(newS))
-                {
-                    newR = -newQ - newS;
-                }
-                else
-                {
-                    newS = -newQ - newR;
-                }
+                var value = absCoords[coord];
+                if (value > biggestValue)
+                    biggestThing = coord;
             }
 
-            return HF.hexPoint(newQ, newR, newS);
+            var newCoords = {};
+                var sign = this[biggestThing] > 0 ? 1 : -1;
+            newCoords[biggestThing] = sign;
+
+            if (biggestThing === 'q')
+            {
+                newCoords['r'] = -sign * (1 - absS);
+            }
+            if (biggestThing === 'r')
+            {
+                newCoords['q'] = -sign * (1 - absS);
+            }
+            if (biggestThing === 's')
+            {
+                newCoords['r'] = -sign * (1 - absR);
+            }
+
+            return HF.hexPoint(newCoords.q, newCoords.r, newCoords.s);
         },
 
         round: function()

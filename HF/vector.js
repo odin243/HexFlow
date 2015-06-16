@@ -28,6 +28,9 @@ HF.vector = function(direction, magnitude)
 
             var newMagnitude = combinedPath.length();
 
+            if (newMagnitude < 0.01)
+                return HF.vector();
+
             var newDirection = combinedPath.toUnit();
 
             return HF.vector(newDirection, newMagnitude);

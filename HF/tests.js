@@ -195,6 +195,24 @@ HF.tests = function()
             Debug.writeln('Updated map state with new information');
             engine.currentMap.debugPrint();
 
+                //Iterate the map
+            engine.iterate() ;
+
+            Debug.writeln('Updated map state with new information');
+            engine.currentMap.debugPrint();
+
+                //Iterate the map
+            engine.iterate();
+
+            Debug.writeln('Updated map state with new information');
+            engine.currentMap.debugPrint();
+
+                //Iterate the map
+            engine.iterate();
+
+            Debug.writeln('Updated map state with new information');
+            engine.currentMap.debugPrint();
+
             Debug.writeln('');
         }
     };
