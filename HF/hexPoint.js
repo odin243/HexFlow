@@ -11,11 +11,7 @@ HF.hexPoint = function(q, r, s)
         return null;
     }
 
-    return {
-        q: q || 0,
-        r: r || 0,
-        s: s || 0,
-
+    var hexPoint = {
         addCoordinates: function(q, r, s)
         {
             if ((q == undefined || isNaN(q)) || (r == undefined || isNaN(r)) || (s == undefined || isNaN(s)))
@@ -147,6 +143,30 @@ HF.hexPoint = function(q, r, s)
             return this.q == point.q && this.r == point.r && this.s == point.s;
         }
     };
+
+    Object.defineProperties(hexPoint,
+        {
+            "q":
+            {
+                value: q || 0,
+                writable: false,
+                configurable: false
+            },
+            "r":
+            {
+                value: r || 0,
+                writable: false,
+                configurable: false
+            },
+            "s":
+            {
+                value: s || 0,
+                writable: false,
+                configurable: false
+            }
+        });
+
+    return hexPoint;
 };
 
 HF.hexPoint.fromString = function(coordinates)
