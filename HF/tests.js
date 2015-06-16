@@ -73,7 +73,7 @@ HF.tests = function()
 
         directionTest: function()
         {
-            this.hexPointEqual('hex_direction', HF.hexPoint(0, -1, 1), HF.directions.faceByIndex(2));
+            this.hexPointEqual('hex_direction', HF.hexPoint(0, 1, -1), HF.directions.faceByIndex(2));
         },
 
         defaultVectorTest: function()
@@ -109,6 +109,7 @@ HF.tests = function()
 
         vectorDispersionTest: function()
         {
+            Debug.writeln('vectorDispersionTest');
             var p1 = HF.hexPoint(1, 1, -2).toUnit();
             var v1 = HF.vector(p1, 10);
             var dispersedV1 = v1.disperse();
@@ -120,17 +121,54 @@ HF.tests = function()
                 Debug.writeln(dispersedVector.direction.toString() + ': ' + dispersedVector.magnitude);
             }
             Debug.writeln('dispersed magnitude: ' + magnitude);
+
+            Debug.writeln('');
         },
 
         tileUpdateTest: function()
         {
-            var tile = HF.hexTile(HF.hexPoint(0, 0, 0), 21, HF.vector(HF.directions.face('ur'), 21), "player1");
-            var updates = tile.calcEffectOnNeighbors();
+            Debug.writeln('tileUpdateTest');
+            Debug.writeln('Creating map of radius 1');
+            var map = HF.hexMap(1);
+
+            var printMap = function () {
+                for (var tileString in map.tiles) {
+                    var tile = map.tiles[tileString];
+
+                    Debug.writeln(tile.location.toString() + ' ' + tile.power);
+                }
+            }
+
+            Debug.writeln('Initial map state');
+            printMap();
+
+            var origin = HF.hexTile(HF.hexPoint(), 21, HF.vector(HF.directions.face('ur'), 21), "player1");
+            var originUpdateList = HF.hexTileList();
+
+            originUpdateList.add(origin);
+            map.updateTiles(originUpdateList);
+
+            Debug.writeln('Updated origin to have 21 power, and flow 21 in the upper-right face direction');
+            printMap();
+
+            var updates = map.getTileAtPoint(HF.hexPoint()).calcEffectOnNeighbors();
+
+            Debug.writeln('Caluculated the effect on neighbors:');
             for (var i = 0; i < updates.length; i++)
             {
                 var update = updates[i];
                 Debug.writeln(update.location.toString() + ' ' + update.power);
             }
+
+            var updateList = HF.hexTileList();
+            updateList.addRange(updates);
+
+            map.updateTiles(updateList);
+
+            Debug.writeln('Updated map state with new information');
+            printMap();
+
+            Debug.writeln('');
         }
     };
 }();
