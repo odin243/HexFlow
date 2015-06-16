@@ -17,6 +17,7 @@ HF.tests = function()
             this.vectorAdditionTest();
             this.vectorDispersionTest();
             this.tileUpdateTest();
+            this.gameEngineTest();
         },
 
         complain: function(name)
@@ -131,8 +132,10 @@ HF.tests = function()
             Debug.writeln('Creating map of radius 1');
             var map = HF.hexMap(1);
 
-            var printMap = function () {
-                for (var tileString in map.tiles) {
+            var printMap = function()
+            {
+                for (var tileString in map.tiles)
+                {
                     var tile = map.tiles[tileString];
 
                     Debug.writeln(tile.location.toString() + ' ' + tile.power);
@@ -167,6 +170,30 @@ HF.tests = function()
 
             Debug.writeln('Updated map state with new information');
             printMap();
+
+            Debug.writeln('');
+        },
+
+        gameEngineTest: function()
+        {
+            Debug.writeln('gameEngineTest');
+            Debug.writeln('Creating map of radius 1');
+            var map = HF.hexMap(1);
+
+            //Initialization - eventually this will be a player action or an initialize function
+            var originUpdate = HF.hexTile(HF.hexPoint(), 21, HF.vector(HF.directions.face('ur'), 21), "player1");
+            map = map.updateTiles(HF.hexTileList().add(originUpdate));
+
+            var engine = HF.engine(map, []);
+
+            Debug.writeln('Initial map state');
+            engine.currentMap.debugPrint();
+
+            //Iterate the map
+            engine.iterate();
+
+            Debug.writeln('Updated map state with new information');
+            engine.currentMap.debugPrint();
 
             Debug.writeln('');
         }

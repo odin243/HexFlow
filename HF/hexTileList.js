@@ -9,15 +9,18 @@ HF.hexTileList = function ()
         add: function (tile)
         {
             this.tiles.push(tile);
+            return this;
         },
 
         addRange: function (tileList)
         {
-            for (var tileIndex = 0; tileIndex < tileList.length; tileIndex++)
+            var tilesToAdd = tileList.hasOwnProperty('tiles') ? tileList.tiles : tileList;
+            for (var tileIndex = 0; tileIndex < tilesToAdd.length; tileIndex++)
             {
-                var tile = tileList[tileIndex];
+                var tile = tilesToAdd[tileIndex];
                 this.add(tile);
             }
+            return this;
         },
 
         getTilesAtString: function (point)

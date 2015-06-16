@@ -46,10 +46,13 @@ HF.hexMap = function (radius, tiles)
         {
             for (var tileString in this.tiles)
             {
-                var tile = this.tiles[tileString];
-                if (tile.location.toString() === point)
+                if (this.tiles.hasOwnProperty(tileString))
                 {
-                    return tile;
+                    var tile = this.tiles[tileString];
+                    if (tile.location.toString() === point)
+                    {
+                        return tile;
+                    }
                 }
             }
         },
@@ -73,6 +76,32 @@ HF.hexMap = function (radius, tiles)
             }
 
             return HF.hexMap(this.radius, newMap);
+        },
+
+        calculateAllTileEffects: function()
+        {
+            var updates = HF.hexTileList();
+            for (var tileString in this.tiles)
+            {
+                if (this.tiles.hasOwnProperty(tileString))
+                {
+                    updates.addRange(this.tiles[tileString].calcEffectOnNeighbors());
+                }
+            }
+            return updates;
+        },
+
+        debugPrint: function()
+        {
+            for (var tileString in this.tiles)
+            {
+                if (this.tiles.hasOwnProperty(tileString))
+                {
+                    var tile = this.tiles[tileString];
+
+                    Debug.writeln(tile.location.toString() + ' ' + tile.power);
+                }
+            }
         }
     };
 };
