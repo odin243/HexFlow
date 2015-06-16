@@ -53,22 +53,33 @@ HF.hexTile = function(location, power, flow, owner)
             return updateTiles;
         },
 
-        applyUpdate: function (update)
+        applyUpdates: function (tileUpdates)
         {
-            if (update.player == null)
-                this.power = Math.max(this.power + update.power, 0);
-            else if (this.player == null || this.player == update.player)
-                this.power = this.power + update.power;
-            else
-                this.power = this.power - update.power;
-
-            if (this.power < 0)
+            var newPower = this.power;
+            var newPlayer = this.player;
+            var newFlow = this.flow;
+                        
+            for (var updateIndex = 0; updateIndex < tileUpdates.length; updateIndex++)
             {
-                this.player = update.player;
-                this.power = Math.abs(power);
+                var tileUpdate = tileUpdates[updateIndex];
+
+                if (tileUpdate.player == null)
+                    newPower = Math.max(newPower + tileUpdate.power, 0);
+                else if (newPlayer == null || newPlayer == tileUpdate.player)
+                    newPower = newPower + tileUpdate.power;
+                else
+                    newPower = newPower - tileUpdate.power;
+
+                if (newPower < 0) {
+                    newPlayer = tileUpdate.player;
+                    newPower = Math.abs(newPower);
+                }
+
+                newFlow = newFlow.add(tileUpdate.flow);
+
             }
 
-            this.flow = this.flow.add(update.flow);
+            return HF.hexTile(this.location, newPower, newFlow, newPlayer);
         }
     };
 }

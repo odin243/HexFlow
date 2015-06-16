@@ -146,7 +146,7 @@ HF.tests = function()
             var originUpdateList = HF.hexTileList();
 
             originUpdateList.add(origin);
-            map.updateTiles(originUpdateList);
+            map = map.updateTiles(originUpdateList);
 
             Debug.writeln('Updated origin to have 21 power, and flow 21 in the upper-right face direction');
             printMap();
@@ -163,7 +163,7 @@ HF.tests = function()
             var updateList = HF.hexTileList();
             updateList.addRange(updates);
 
-            map.updateTiles(updateList);
+            map = map.updateTiles(updateList);
 
             Debug.writeln('Updated map state with new information');
             printMap();
