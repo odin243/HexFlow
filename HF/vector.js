@@ -37,6 +37,9 @@ HF.vector = function(direction, magnitude)
         //The total magnitude of the dispersed vectors will (approximately) equal the magnitude of this vector
         disperse: function()
         {
+            if (this.magnitude === 0)
+                return [];
+
             var primaryFace = this.findFirstFace();
             var primaryAffinity = this.affinityWithFace(primaryFace);
 
