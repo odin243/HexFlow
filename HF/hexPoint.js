@@ -92,9 +92,15 @@ HF.hexPoint = function(q, r, s)
             {
                 var value = Math.abs(coords[coord]);
                 if (value > largestValue)
+                {
+                    largestValue = value;
                     largestCoord = coord;
+                }
                 if (value < smallestValue)
+                {
+                    smallestValue = value;
                     smallestCoord = coord;
+                }
             }
 
             var middleCoord;
