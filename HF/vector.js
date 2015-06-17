@@ -44,10 +44,10 @@ HF.vector = function(direction, magnitude)
                 return [];
 
             var primaryFace = this.findFirstFace();
-            var primaryAffinity = this.affinityWithFace(primaryFace);
+            var primaryAffinity = 1 - this.direction.subtract(primaryFace).length();
 
             var secondaryFace = this.findSecondFace();
-            var secondaryAffinity = this.affinityWithFace(secondaryFace);
+            var secondaryAffinity = 1 - this.direction.subtract(secondaryFace).length();
 
             var forward = 1;
             var frontSides = forward * HF.config.flowDispersionConstant;
@@ -112,14 +112,6 @@ HF.vector = function(direction, magnitude)
             }
 
             return dispersedVectors;
-        },
-
-        //This method returns the 'affinity' this vector has with the given face.
-        affinityWithFace: function(face)
-        {
-            var differenceFromFace = this.direction.subtract(face).length();
-
-            return differenceFromFace;
         },
 
         findFirstFace: function ()
