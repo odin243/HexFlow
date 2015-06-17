@@ -178,7 +178,7 @@ HF.tests = function()
         {
             Debug.writeln('gameEngineTest');
             Debug.writeln('Creating map of radius 1');
-            var map = HF.hexMap(1);
+            var map = HF.hexMap(3);
 
             //Initialization - eventually this will be a player action or an initialize function
             var originUpdate = HF.hexTile(HF.hexPoint(), 21, HF.vector(HF.directions.face('ur'), 21), "player1");
