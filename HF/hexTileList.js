@@ -1,36 +1,36 @@
 ﻿//HF Namespace
 window.HF = window.HF || {};
 
-HF.hexTileList = function ()
+HF.hexTileList = function (tileList)
 {
     return {
-        tiles: [],
+        tileList: tileList || [],
 
         add: function (tile)
         {
-            this.tiles.push(tile);
+            this.tileList.push(tile);
             return this;
         },
 
-        addRange: function (tileList)
+        addRange: function (tiles)
         {
-            var tilesToAdd = tileList.hasOwnProperty('tiles') ? tileList.tiles : tileList;
-            for (var tileIndex = 0; tileIndex < tilesToAdd.length; tileIndex++)
+            var tileList = tiles.hasOwnProperty('tileList') ? tiles.tileList : tiles;
+            for (var tileIndex = 0; tileIndex < tileList.length; tileIndex++)
             {
-                var tile = tilesToAdd[tileIndex];
+                var tile = tileList[tileIndex];
                 this.add(tile);
             }
             return this;
         },
 
-        getTilesAtString: function (point)
+        getTilesAtString: function (pointString)
         {
             var matches = [];
-            for (var i = 0; i < this.tiles.length; i++)
+            for (var i = 0; i < this.tileList.length; i++)
             {
-                if (this.tiles[i].location.toString() === point)
+                if (this.tileList[i].location.toString() === pointString)
                 {
-                    matches.push(this.tiles[i]);
+                    matches.push(this.tileList[i]);
                 }
             }
 

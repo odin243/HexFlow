@@ -1,7 +1,7 @@
 ﻿//HF Namespace
 window.HF = window.HF || {};
 
-HF.hexTile = function(location, power, flow, owner)
+HF.hexTile = function(location, power, flow, owner, isSource)
 {
     if (location == undefined)
     {
@@ -14,6 +14,7 @@ HF.hexTile = function(location, power, flow, owner)
         power: power || 0,
         flow: flow || HF.vector(),
         owner: owner || null,
+        isSource: isSource || false,
 
         getIdentifier: function()
         {

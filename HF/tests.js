@@ -132,27 +132,17 @@ HF.tests = function()
             Debug.writeln('Creating map of radius 1');
             var map = HF.hexMap(1);
 
-            var printMap = function()
-            {
-                for (var tileString in map.tiles)
-                {
-                    var tile = map.tiles[tileString];
-
-                    Debug.writeln(tile.location.toString() + ' ' + tile.power);
-                }
-            }
-
             Debug.writeln('Initial map state');
-            printMap();
+            map.debugPrint();
 
-            var origin = HF.hexTile(HF.hexPoint(), 21, HF.vector(HF.directions.face('ur'), 21), "player1");
+            var origin = HF.hexTile(HF.hexPoint(), 21, HF.vector(HF.directions.face('ur'), 21), 'player1');
             var originUpdateList = HF.hexTileList();
 
             originUpdateList.add(origin);
             map = map.updateTiles(originUpdateList);
 
             Debug.writeln('Updated origin to have 21 power, and flow 21 in the upper-right face direction');
-            printMap();
+            map.debugPrint();
 
             var updates = map.getTileAtPoint(HF.hexPoint()).calcEffectOnNeighbors();
 
@@ -169,7 +159,7 @@ HF.tests = function()
             map = map.updateTiles(updateList);
 
             Debug.writeln('Updated map state with new information');
-            printMap();
+            map.debugPrint() ;
 
             Debug.writeln('');
         },
@@ -178,11 +168,10 @@ HF.tests = function()
         {
             Debug.writeln('gameEngineTest');
             Debug.writeln('Creating map of radius 1');
-            var map = HF.hexMap(3);
 
-            //Initialization - eventually this will be a player action or an initialize function
-            var originUpdate = HF.hexTile(HF.hexPoint(), 21, HF.vector(HF.directions.face('ur'), 21), "player1");
-            map = map.updateTiles(HF.hexTileList().add(originUpdate));
+            //Initialization
+            var origin = HF.hexTile(HF.hexPoint(), 21, HF.vector(HF.directions.face('ur'), 21), 'player1');
+            var map = HF.hexMap(3, [origin]);
 
             var engine = HF.engine(map, []);
 

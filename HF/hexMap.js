@@ -1,60 +1,70 @@
 ﻿//HF Namespace
 window.HF = window.HF || {};
 
-HF.hexMap = function (radius, tiles)
+HF.hexMap = function(radius, tiles)
 {
-    var map = tiles || {};
+    var map = {};
 
-    if (tiles === undefined)
+    var addToMap = function(newTile)
     {
-        var addToMap = function (newTile)
-        {
-            map[newTile.location.toString()] = newTile;
-        };
+        map[newTile.location.toString()] = newTile;
+    };
 
-        var origin = HF.hexTile(HF.hexPoint());
-        addToMap(origin);
-
-        var addRing = function (ringRadius)
+    var addRing = function(ringRadius)
+    {
+        for (var side = 0; side < 6; side++)
         {
-            for (var side = 0; side < 6; side++)
+            var sideDirection = (side + 2) % 6;
+            var ringCorner = HF.directions.faceByIndex(side).scale(ringRadius);
+            for (var sideOffset = 0; sideOffset < ringRadius; sideOffset++)
             {
-                var sideDirection = (side + 2) % 6;
-                var ringCorner = HF.directions.faceByIndex(side).scale(ringDistance);
-                for (var sideOffset = 0; sideOffset < ringRadius; sideOffset++)
-                {
-                    var newTileLocation = ringCorner.add(HF.directions.faceByIndex(sideDirection).scale(sideOffset));
-                    var newTile = HF.hexTile(newTileLocation);
-                    addToMap(newTile);
-                }
+                var newTileLocation = ringCorner.add(HF.directions.faceByIndex(sideDirection).scale(sideOffset));
+                var newTile = HF.hexTile(newTileLocation);
+                addToMap(newTile);
             }
+        }
+    };
 
-        };
+    var origin = HF.hexTile(HF.hexPoint());
+    addToMap(origin);
 
-        for (var ringDistance = 1; ringDistance <= radius; ringDistance++)
+    for (var ringDistance = 1; ringDistance <= radius; ringDistance++)
+    {
+        addRing(ringDistance);
+    }
+
+    //If a list or array was passed in, replace those specific tiles with the ones passed in
+    if (tiles != undefined)
+    {
+        var tileList = tiles;
+        //Check for a hexTileList
+        if (tiles.hasOwnProperty('tileList') && tiles.tileList != undefined)
+            tileList = tiles.tileList;
+        for (var i = 0; i < tileList.length; i++)
         {
-            addRing(ringDistance);
+            addToMap(tileList[i]);
         }
     }
-    
+
     return {
-        tiles: map,
+        tileMap: map,
 
         radius: radius,
 
         getTileAtString: function (point)
         {
-            for (var tileString in this.tiles)
+            for (var tileString in this.tileMap)
             {
-                if (this.tiles.hasOwnProperty(tileString))
+                if (this.tileMap.hasOwnProperty(tileString))
                 {
-                    var tile = this.tiles[tileString];
+                    var tile = this.tileMap[tileString];
                     if (tile.location.toString() === point)
                     {
                         return tile;
                     }
                 }
             }
+            return null;
         },
 
         getTileAtPoint: function (point)
@@ -64,28 +74,30 @@ HF.hexMap = function (radius, tiles)
 
         updateTiles: function (tileUpdates)
         {
-            var newMap = {};
-
-            for (var location in this.tiles)
+            var newMapTiles = [];
+            for (var location in this.tileMap)
             {
-                var tile = this.tiles[location];
-                var updates = tileUpdates.getTilesAtString(location);
-                var updatedTile = tile.applyUpdates(updates);
+                if (this.tileMap.hasOwnProperty(location))
+                {
+                    var tile = this.tileMap[location];
+                    var updates = tileUpdates.getTilesAtString(location);
+                    var updatedTile = tile.applyUpdates(updates);
 
-                newMap[updatedTile.location.toString()] = updatedTile;
+                    newMapTiles.push(updatedTile);
+                }
             }
 
-            return HF.hexMap(this.radius, newMap);
+            return HF.hexMap(this.radius, newMapTiles);
         },
 
         calculateAllTileEffects: function()
         {
             var updates = HF.hexTileList();
-            for (var tileString in this.tiles)
+            for (var tileString in this.tileMap)
             {
-                if (this.tiles.hasOwnProperty(tileString))
+                if (this.tileMap.hasOwnProperty(tileString))
                 {
-                    updates.addRange(this.tiles[tileString].calcEffectOnNeighbors());
+                    updates.addRange(this.tileMap[tileString].calcEffectOnNeighbors());
                 }
             }
             return updates;
@@ -93,11 +105,11 @@ HF.hexMap = function (radius, tiles)
 
         debugPrint: function()
         {
-            for (var tileString in this.tiles)
+            for (var tileString in this.tileMap)
             {
-                if (this.tiles.hasOwnProperty(tileString))
+                if (this.tileMap.hasOwnProperty(tileString))
                 {
-                    var tile = this.tiles[tileString];
+                    var tile = this.tileMap[tileString];
 
                     Debug.writeln(tile.location.toString() + ' ' + tile.power);
                 }
