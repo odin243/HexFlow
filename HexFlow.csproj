@@ -66,6 +66,8 @@
     <Content Include="HF\hexTileList.js" />
     <Content Include="HF\state.js" />
     <Content Include="HF\tests.js" />
+    <Content Include="HF\visual\point.js" />
+    <Content Include="HF\visual\scene.js" />
     <Content Include="index.html" />
     <Content Include="HF\directions.js" />
     <Content Include="HF\vector.js" />
