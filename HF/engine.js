@@ -9,7 +9,33 @@ HF.engine = function(hexMap, players)
     return {
         currentMap: hexMap,
         players: players,
+        scene: HF.visual.scene(HF.visual.point(500, 300)),
         //run is the main game loop
+        run: function()
+        {
+            var engine = this;
+            var frameRate = HF.config.frameRate || 30;
+            this.intervalId = setInterval(function() {
+                engine.iterate();
+            }, 1000 / frameRate);
+        },
+        stop: function()
+        {
+            clearInterval(this.intervalId);
+        },
+        test: function(framesToTest)
+        {
+            var engine = this;
+            var frameRate = HF.config.frameRate || 30;
+            if (framesToTest > 0)
+            {
+                engine.iterate();
+                setTimeout(function() {
+                    engine.test(framesToTest - 1);
+                }, 1000 / frameRate);
+            }
+        },
+
         iterate: function()
         {
             //Step 1:
@@ -37,7 +63,11 @@ HF.engine = function(hexMap, players)
             //render the new state
 
             this.currentMap = newMap;
-            //currentGameState.updateScene()
+
+            this.scene.drawMap(this.currentMap, 'body');
+
+            if (this.hasOwnProperty('afterIterate'))
+                this.afterIterate();
         }
 
     };
