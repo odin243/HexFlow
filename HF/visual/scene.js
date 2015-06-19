@@ -81,18 +81,48 @@ HF.visual.scene = function(origin, flatTop)
                 .join(' ');
         },
 
+        getHexColor: function(hexTile)
+        {
+            var maxPower = HF.config.hexFullPower || 100;
+            var maxColor = HF.config.hexFullColor || '#000000';
+            var scale = d3.scale.linear()
+                .domain([0, maxPower])
+                .interpolate(d3.interpolateRgb)
+                .range(['#FFFFFF', maxColor]);
+            var power = Math.min(hexTile.power, maxPower);
+            power = Math.max(power, 0);
+            var color = scale(power);
+            return color;
+        },
+
         //Returns an array of shape strings corresponding to the hexagons on a map
-        getShapesForMap: function(hexMap)
+        drawTiles: function(svgSelection, hexMap)
         {
             var scene = this;
-            var hexPoints = hexMap.getTileArray().map(function(tile) {
-                return tile.location;
+            var tiles = hexMap.getTileArray();
+
+            var polygonSelection =
+                svgSelection.selectAll('polygon')
+                    .data(tiles, function(tile) {
+                        return tile.getIdentifier();
+                    });
+
+            //First draw any missing tiles
+            polygonSelection.enter().append('svg:polygon');
+
+            //Next update the tile attributes
+            polygonSelection.attr('id', function(tile) {
+                    return tile.getIdentifier();
+                })
+                .attr('points', function(tile) {
+                    return scene.makeHexShapeString(tile.location);
+                })
+                .attr('fill', function(tile) {
+                    return scene.getHexColor(tile);
             });
-            var shapeStrings = hexPoints.map(function (hexPoint)
-            {
-                return scene.makeHexShapeString(hexPoint);
-            });
-            return shapeStrings;
+
+            //Remove any old tiles
+            polygonSelection.exit().remove();
         },
 
         // containerSelector is a selector that d3 can use to find the container element
@@ -100,16 +130,14 @@ HF.visual.scene = function(origin, flatTop)
         {
             var containerSelection = d3.select(containerSelector);
 
-            var svgSelection = containerSelection
-                .append('svg')
-                .attr('width', '100%')
-                .attr('height', '100%');
+            var svgSelection = containerSelection.select('svg');
+            if (svgSelection.empty())
+                svgSelection = containerSelection
+                    .append('svg')
+                    .attr('width', '100%')
+                    .attr('height', '100%');
 
-            var hexShapes = this.getShapesForMap(hexMap);
-
-            hexShapes.map(function(shapeString) {
-                svgSelection.append('svg:polygon').attr('points', shapeString);
-            });
+            this.drawTiles(svgSelection, hexMap);
 
             svgSelection
                 .style('fill', 'none')
