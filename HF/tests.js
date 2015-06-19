@@ -18,6 +18,7 @@ HF.tests = function()
             this.vectorDispersionTest();
             this.tileUpdateTest();
             this.gameEngineTest();
+            this.visualTest();
         },
 
         complain: function(name)
@@ -159,7 +160,7 @@ HF.tests = function()
             map = map.updateTiles(updateList);
 
             Debug.writeln('Updated map state with new information');
-            map.debugPrint() ;
+            map.debugPrint();
 
             Debug.writeln('');
         },
@@ -184,25 +185,41 @@ HF.tests = function()
             Debug.writeln('Updated map state with new information');
             engine.currentMap.debugPrint();
 
-                //Iterate the map
-            engine.iterate() ;
-
-            Debug.writeln('Updated map state with new information');
-            engine.currentMap.debugPrint();
-
-                //Iterate the map
+            //Iterate the map
             engine.iterate();
 
             Debug.writeln('Updated map state with new information');
             engine.currentMap.debugPrint();
 
-                //Iterate the map
+            //Iterate the map
+            engine.iterate();
+
+            Debug.writeln('Updated map state with new information');
+            engine.currentMap.debugPrint();
+
+            //Iterate the map
             engine.iterate();
 
             Debug.writeln('Updated map state with new information');
             engine.currentMap.debugPrint();
 
             Debug.writeln('');
+        },
+
+        visualTest: function()
+        {
+            var scene = HF.visual.scene();
+            var hexString = scene.makeHexShapeString(HF.visual.point(50,50), 25);
+            d3.select('body')
+                .append('svg')
+                .attr('width', 100)
+                .attr('height', 100)
+                .append('svg:polygon')
+                .attr('id', 'test-hex')
+                .attr('visibility', 'visible')
+                .attr('fill', 'none')
+                .attr('stroke', 'black')
+                .attr('points', hexString);
         }
     };
 }();

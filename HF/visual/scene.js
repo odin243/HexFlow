@@ -20,9 +20,11 @@ HF.visual.scene = function()
             return points;
         },
 
-        makeHexShapeString: function(scale)
+        // center is a point object
+        // scale should be the distance from corner to corner
+        makeHexShapeString: function(center, scale)
         {
-            return this.getHexCorners(HF.visual.point(0, 0), scale)
+            return this.getHexCorners(center, scale)
                 .map(function(point) {
                     return point.x.toFixed(3) + ',' + point.y.toFixed(3);
                 })
