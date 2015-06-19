@@ -17,8 +17,8 @@ HF.tests = function()
             this.vectorAdditionTest();
             this.vectorDispersionTest();
             this.tileUpdateTest();
-            this.gameEngineTest();
             this.visualTest();
+            this.gameEngineTest();
         },
 
         complain: function(name)
@@ -171,7 +171,7 @@ HF.tests = function()
             Debug.writeln('Creating map of radius 1');
 
             //Initialization
-            var origin = HF.hexTile(HF.hexPoint(), 21, HF.vector(HF.directions.face('ur'), 21), 'player1');
+            var origin = HF.hexTile(HF.hexPoint(), 100, HF.vector(HF.directions.face('ur'), 20), 'player1');
             var map = HF.hexMap(3, [origin]);
 
             var engine = HF.engine(map, []);
@@ -179,36 +179,18 @@ HF.tests = function()
             Debug.writeln('Initial map state');
             engine.currentMap.debugPrint();
 
-            //Iterate the map
-            engine.iterate();
+            engine.afterIterate = function()
+            {
+                Debug.writeln('Updated map state with new information');
+                engine.currentMap.debugPrint();
+            };
 
-            Debug.writeln('Updated map state with new information');
-            engine.currentMap.debugPrint();
-
-            //Iterate the map
-            engine.iterate();
-
-            Debug.writeln('Updated map state with new information');
-            engine.currentMap.debugPrint();
-
-            //Iterate the map
-            engine.iterate();
-
-            Debug.writeln('Updated map state with new information');
-            engine.currentMap.debugPrint();
-
-            //Iterate the map
-            engine.iterate();
-
-            Debug.writeln('Updated map state with new information');
-            engine.currentMap.debugPrint();
-
-            Debug.writeln('');
+            engine.test(10);
         },
 
         visualTest: function()
         {
-            var map = HF.hexMap(3);
+            var map = HF.hexMap(3, [HF.hexTile(HF.hexPoint(), 50)]);
             var scene = HF.visual.scene(HF.visual.point(500,300));
             scene.drawMap(map, 'body');
         }
