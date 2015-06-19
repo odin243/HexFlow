@@ -58,3 +58,5 @@ bin/HexFlow.dll.config
 /packages/d3.3.5.5
 *.suo
 .vs/config/applicationhost.config
+d3.js
+d3.min.js
