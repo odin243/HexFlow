@@ -114,6 +114,20 @@ HF.hexMap = function(radius, tiles)
                     Debug.writeln(tile.location.toString() + ' ' + tile.power);
                 }
             }
+        },
+
+        getTileArray: function()
+        {
+            var tiles = [];
+            var tileMap = this.tileMap;
+            for (var tileString in tileMap)
+            {
+                if (tileMap.hasOwnProperty(tileString))
+                {
+                    tiles.push(tileMap[tileString]);
+                }
+            }
+            return tiles;
         }
     };
 };

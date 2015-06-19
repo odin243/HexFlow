@@ -208,18 +208,9 @@ HF.tests = function()
 
         visualTest: function()
         {
-            var scene = HF.visual.scene();
-            var hexString = scene.makeHexShapeString(HF.visual.point(50,50), 25);
-            d3.select('body')
-                .append('svg')
-                .attr('width', 100)
-                .attr('height', 100)
-                .append('svg:polygon')
-                .attr('id', 'test-hex')
-                .attr('visibility', 'visible')
-                .attr('fill', 'none')
-                .attr('stroke', 'black')
-                .attr('points', hexString);
+            var map = HF.hexMap(3);
+            var scene = HF.visual.scene(HF.visual.point(500,300));
+            scene.drawMap(map, 'body');
         }
     };
 }();
