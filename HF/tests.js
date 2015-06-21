@@ -168,12 +168,11 @@ HF.tests = function()
         gameEngineTest: function()
         {
             Debug.writeln('gameEngineTest');
-            Debug.writeln('Creating map of radius 1');
+            Debug.writeln('Creating map of radius 3');
 
             //Initialization
-            var origin = HF.hexTile(HF.hexPoint(), 100, HF.vector(HF.directions.face('ur'), 20), 'player1');
-            var map = HF.hexMap(3, [origin]);
             var origin = HF.hexTile(HF.hexPoint(), 100, HF.vector(HF.directions.face('ur'), 20), 'player1', true);
+            var map = HF.hexMap(6, [origin]);
 
             var engine = HF.engine(map, []);
 
@@ -186,7 +185,7 @@ HF.tests = function()
                 engine.currentMap.debugPrint();
             };
 
-            engine.test(10);
+            engine.test(10000);
         },
 
         visualTest: function()

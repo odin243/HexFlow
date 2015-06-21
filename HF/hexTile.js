@@ -43,7 +43,14 @@ HF.hexTile = function(location, power, flow, owner, isSource)
 
                 var neighbor = this.location.add(dispersion.direction).round();
 
-                var updateTile = HF.hexTile(neighbor, dispersion.magnitude, dispersion, this.owner);
+                var newPower = dispersion.magnitude;
+
+                var newDirection = dispersion.direction;
+                var newMagnitude = dispersion.magnitude * HF.config.flowMagnitudeSustain;
+
+                var newFlow = HF.vector(newDirection, newMagnitude);
+
+                var updateTile = HF.hexTile(neighbor, newPower, newFlow, this.owner);
 
                 updateTiles.add(updateTile);
             }
