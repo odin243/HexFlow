@@ -6,10 +6,13 @@ HF.config = function()
 {
     return {
         //Frame rate in frames per second
-        frameRate: 0.5,
+        frameRate: 10,
 
         //0 to 1; 0 represents no dispersion, 1 represents complete dispersion.
         flowDispersionConstant: .2,
+
+        //0 to 1; 1 represents no decay in magnitude, 0 represents complete loss of momentum.
+        flowMagnitudeSustain: .01,
 
         //The size of a hex, corner to corner
         hexSize: 30,

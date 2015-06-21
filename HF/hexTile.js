@@ -48,8 +48,9 @@ HF.hexTile = function(location, power, flow, owner, isSource)
                 updateTiles.add(updateTile);
             }
 
-            //Step 3: Add an update for this tile, based on the power that has flowed out
-            updateTiles.add(HF.hexTile(this.location, -1 * actualFlowMagnitude, null, null));
+            if (this.isSource === false)
+                //Step 3: Add an update for this tile, based on the power that has flowed out
+                updateTiles.add(HF.hexTile(this.location, -1 * actualFlowMagnitude, null, null));
 
             return updateTiles;
         },
@@ -80,7 +81,7 @@ HF.hexTile = function(location, power, flow, owner, isSource)
 
             }
 
-            return HF.hexTile(this.location, newPower, newFlow, newPlayer);
+            return HF.hexTile(this.location, newPower, newFlow, newPlayer, this.isSource);
         }
     };
 }

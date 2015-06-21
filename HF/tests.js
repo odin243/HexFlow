@@ -173,6 +173,7 @@ HF.tests = function()
             //Initialization
             var origin = HF.hexTile(HF.hexPoint(), 100, HF.vector(HF.directions.face('ur'), 20), 'player1');
             var map = HF.hexMap(3, [origin]);
+            var origin = HF.hexTile(HF.hexPoint(), 100, HF.vector(HF.directions.face('ur'), 20), 'player1', true);
 
             var engine = HF.engine(map, []);
 
