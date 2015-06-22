@@ -30,7 +30,7 @@ HF.hexTile = function(location, power, flow, owner, isSource)
 
             var dispersedVectors = actualFlow.disperse();
 
-            var updateTiles = HF.hexTileList();
+            var updates = [];
 
             //Step 2: Apply the dispersed vector to each neighbor, and calculate an update tile
             for (var i = 0; i < dispersedVectors.length; i++)
@@ -52,14 +52,14 @@ HF.hexTile = function(location, power, flow, owner, isSource)
 
                 var updateTile = HF.hexTile(neighbor, dispersion.magnitude, dispersion, this.owner);
 
-                updateTiles.add(updateTile);
+                updates.push(updateTile);
             }
 
             if (this.isSource === false)
                 //Step 3: Add an update for this tile, based on the power that has flowed out
-                updateTiles.add(HF.hexTile(this.location, -1 * actualFlowMagnitude, null, null));
+                updates.push(HF.hexTile(this.location, -1 * actualFlowMagnitude, null, null));
 
-            return updateTiles;
+            return updates;
         },
 
         applyUpdates: function (tileUpdates)

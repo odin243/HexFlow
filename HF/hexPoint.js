@@ -11,7 +11,19 @@ HF.hexPoint = function(q, r, s)
         return null;
     }
 
+    q = q || 0;
+    r = r || 0;
+    s = s || 0;
+
     var hexPoint = {
+        q: q,
+        r: r,
+        s: s,
+        string: q + '_' + r + '_' + s,
+        toString: function()
+        {
+            return this.string;
+        },
         addCoordinates: function(q, r, s)
         {
             if ((q == undefined || isNaN(q)) || (r == undefined || isNaN(r)) || (s == undefined || isNaN(s)))
@@ -112,7 +124,7 @@ HF.hexPoint = function(q, r, s)
             var newCoords = {};
             newCoords[largestCoord] = this[largestCoord] > 0 ? 1 : -1;
             newCoords[middleCoord] = this[middleCoord];
-            newCoords[smallestCoord] = -this[largestCoord] -this[middleCoord];
+            newCoords[smallestCoord] = -this[largestCoord] - this[middleCoord];
 
             return HF.hexPoint(newCoords.q, newCoords.r, newCoords.s);
         },
@@ -140,38 +152,11 @@ HF.hexPoint = function(q, r, s)
             return HF.hexPoint(roundedQ, roundedR, roundedS);
         },
 
-        toString: function()
-        {
-            return this.q + '_' + this.r + '_' + this.s;
-        },
-
-        equals: function (point)
+        equals: function(point)
         {
             return this.q == point.q && this.r == point.r && this.s == point.s;
         }
     };
-
-    Object.defineProperties(hexPoint,
-        {
-            "q":
-            {
-                value: q || 0,
-                writable: false,
-                configurable: false
-            },
-            "r":
-            {
-                value: r || 0,
-                writable: false,
-                configurable: false
-            },
-            "s":
-            {
-                value: s || 0,
-                writable: false,
-                configurable: false
-            }
-        });
 
     return hexPoint;
 };

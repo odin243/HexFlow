@@ -65,7 +65,7 @@
     <Content Include="HF\hexMap.js" />
     <Content Include="HF\hexPoint.js" />
     <Content Include="HF\hexTile.js" />
-    <Content Include="HF\hexTileList.js" />
+    <Content Include="HF\hexTileDictionary.js" />
     <Content Include="HF\state.js" />
     <Content Include="HF\tests.js" />
     <Content Include="HF\visual\point.js" />

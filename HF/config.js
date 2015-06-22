@@ -9,10 +9,10 @@ HF.config = function()
         frameRate: 10,
 
         //0 to 1; 0 represents no dispersion, 1 represents complete dispersion.
-        flowDispersionConstant: .2,
+        flowDispersionConstant: .1,
 
         //0 to 1; 1 represents no decay in magnitude, 0 represents complete loss of momentum.
-        flowMagnitudeSustain: .01,
+        flowMagnitudeSustain: 0.5,
 
         //The size of a hex, corner to corner
         hexSize: 30,
@@ -21,7 +21,7 @@ HF.config = function()
         hexFullPower: 100,
 
         //The color used for full power.
-        hexFullColor: '#0000FF'
+        hexFullColor: '#0000FF',
 
         debug: false
     };

@@ -99,7 +99,7 @@ HF.visual.scene = function(origin, flatTop)
         drawTiles: function(svgSelection, hexMap)
         {
             var scene = this;
-            var tiles = hexMap.getTileArray();
+            var tiles = hexMap.toArray();
 
             var polygonSelection =
                 svgSelection.selectAll('polygon')

@@ -137,7 +137,7 @@ HF.tests = function()
             map.debugPrint();
 
             var origin = HF.hexTile(HF.hexPoint(), 21, HF.vector(HF.directions.face('ur'), 21), 'player1');
-            var originUpdateList = HF.hexTileList();
+            var originUpdateList = HF.hexTileDictionary();
 
             originUpdateList.add(origin);
             map = map.updateTiles(originUpdateList);
@@ -154,8 +154,8 @@ HF.tests = function()
                 Debug.writeln(update.location.toString() + ' ' + update.power);
             }
 
-            var updateList = HF.hexTileList();
-            updateList.addRange(updates);
+            var updateList = HF.hexTileDictionary();
+            updateList.addMany(updates);
 
             map = map.updateTiles(updateList);
 
@@ -167,8 +167,6 @@ HF.tests = function()
 
         gameEngineTest: function()
         {
-            Debug.writeln('gameEngineTest');
-            Debug.writeln('Creating map of radius 3');
             if (HF.config.debug === true)
             {
                 Debug.writeln('gameEngineTest');
