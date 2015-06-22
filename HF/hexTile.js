@@ -43,14 +43,14 @@ HF.hexTile = function(location, power, flow, owner, isSource)
 
                 var neighbor = this.location.add(dispersion.direction).round();
 
-                var newPower = dispersion.magnitude;
+                //var newPower = dispersion.magnitude;
 
-                var newDirection = dispersion.direction;
-                var newMagnitude = dispersion.magnitude * HF.config.flowMagnitudeSustain;
+                //var newDirection = dispersion.direction;
+                //var newMagnitude = dispersion.magnitude * HF.config.flowMagnitudeSustain;
 
-                var newFlow = HF.vector(newDirection, newMagnitude);
+                //var newFlow = HF.vector(dispersion.direction, dispersion.magnitude * HF.config.flowMagnitudeSustain);
 
-                var updateTile = HF.hexTile(neighbor, newPower, newFlow, this.owner);
+                var updateTile = HF.hexTile(neighbor, dispersion.magnitude, dispersion, this.owner);
 
                 updateTiles.add(updateTile);
             }
@@ -64,9 +64,13 @@ HF.hexTile = function(location, power, flow, owner, isSource)
 
         applyUpdates: function (tileUpdates)
         {
+            if (this.isSource === true)
+                return this;
+
             var newPower = this.power;
             var newPlayer = this.player;
-            var newFlow = this.flow;
+            //The flow left over from the previous turn should be scaled back, so that we don't continously build up speed
+            var newFlow = this.flow.scale(HF.config.flowMagnitudeSustain);
                         
             for (var updateIndex = 0; updateIndex < tileUpdates.length; updateIndex++)
             {
@@ -74,7 +78,7 @@ HF.hexTile = function(location, power, flow, owner, isSource)
 
                 if (tileUpdate.player == null)
                     newPower = Math.max(newPower + tileUpdate.power, 0);
-                else if (newPlayer == null || newPlayer == tileUpdate.player)
+                else if (newPlayer == null || newPlayer === tileUpdate.player)
                     newPower = newPower + tileUpdate.power;
                 else
                     newPower = newPower - tileUpdate.power;

@@ -35,6 +35,11 @@ HF.vector = function(direction, magnitude)
 
             return HF.vector(newDirection, newMagnitude);
         },
+        
+        scale: function(scalar)
+        {
+            return HF.vector(this.direction, this.magnitude * scalar);
+        },
 
         //This method disperses this vectors magnitude in each face direction, and returns a list of the resultant dispersed vectors
         //The total magnitude of the dispersed vectors will (approximately) equal the magnitude of this vector
