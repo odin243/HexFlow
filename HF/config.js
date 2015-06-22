@@ -22,5 +22,7 @@ HF.config = function()
 
         //The color used for full power.
         hexFullColor: '#0000FF'
+
+        debug: false
     };
 }();
