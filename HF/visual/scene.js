@@ -108,17 +108,18 @@ HF.visual.scene = function(origin, flatTop)
                     });
 
             //First draw any missing tiles
-            polygonSelection.enter().append('svg:polygon');
-
-            //Next update the tile attributes
-            polygonSelection.attr('id', function(tile) {
+            polygonSelection.enter()
+                .append('svg:polygon')
+                .attr('id', function(tile) {
                     return tile.getIdentifier();
                 })
                 .attr('points', function(tile) {
                     return scene.makeHexShapeString(tile.location);
-                })
-                .attr('fill', function(tile) {
-                    return scene.getHexColor(tile);
+                });
+
+            //Next update the tile attributes
+            polygonSelection.attr('fill', function(tile) {
+                return scene.getHexColor(tile);
             });
 
             //Remove any old tiles
