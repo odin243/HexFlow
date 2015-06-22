@@ -169,6 +169,11 @@ HF.tests = function()
         {
             Debug.writeln('gameEngineTest');
             Debug.writeln('Creating map of radius 3');
+            if (HF.config.debug === true)
+            {
+                Debug.writeln('gameEngineTest');
+                Debug.writeln('Creating map of radius 3');
+            }
 
             //Initialization
             var origin = HF.hexTile(HF.hexPoint(), 100, HF.vector(HF.directions.face('ur'), 20), 'player1', true);
@@ -176,14 +181,20 @@ HF.tests = function()
 
             var engine = HF.engine(map, []);
 
-            Debug.writeln('Initial map state');
-            engine.currentMap.debugPrint();
-
-            engine.afterIterate = function()
+            if (HF.config.debug === true)
             {
-                Debug.writeln('Updated map state with new information');
+                Debug.writeln('Initial map state');
                 engine.currentMap.debugPrint();
-            };
+            }
+
+            if (HF.config.debug === true)
+            {
+                engine.afterIterate = function()
+                {
+                    Debug.writeln('Updated map state with new information');
+                    engine.currentMap.debugPrint();
+                };
+            }
 
             engine.test(10000);
         },
