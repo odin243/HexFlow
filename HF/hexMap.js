@@ -46,7 +46,7 @@ HF.hexMap = function(radius, tileArray)
 
         getTileAtPoint: function (point)
         {
-            return this.getTileAtString(point.string);
+            return this.getTileAtString(point.toString());
         },
 
         updateTiles: function(tileUpdateDictionary)
