@@ -20,7 +20,7 @@ HF.hexMap = function(radius, tileArray)
         }
     };
 
-    var origin = HF.hexTile(HF.hexPoint());
+    var origin = HF.hexTile(new HF.hexPoint());
     map.set(origin);
 
     for (var ringDistance = 1; ringDistance <= radius; ringDistance++)

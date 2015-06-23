@@ -12,7 +12,7 @@ HF.hexTile = function(location, power, flow, owner, isSource)
     return {
         location: location,
         power: power || 0,
-        flow: flow || HF.vector(),
+        flow: flow || new HF.vector(),
         owner: owner || null,
         isSource: isSource || false,
 
@@ -26,7 +26,7 @@ HF.hexTile = function(location, power, flow, owner, isSource)
             //Step 1: Disperse the current vector in each direction
             //If we have less power than flow, then the actual flow magnitude will be equal to our power
             var actualFlowMagnitude = Math.min(this.power, this.flow.magnitude);
-            var actualFlow = HF.vector(this.flow.direction, actualFlowMagnitude);
+            var actualFlow = new HF.vector(this.flow.direction, actualFlowMagnitude);
 
             var dispersedVectors = actualFlow.disperse();
 
@@ -48,7 +48,7 @@ HF.hexTile = function(location, power, flow, owner, isSource)
                 //var newDirection = dispersion.direction;
                 //var newMagnitude = dispersion.magnitude * HF.config.flowMagnitudeSustain;
 
-                //var newFlow = HF.vector(dispersion.direction, dispersion.magnitude * HF.config.flowMagnitudeSustain);
+                //var newFlow = new HF.vector(dispersion.direction, dispersion.magnitude * HF.config.flowMagnitudeSustain);
 
                 var updateTile = HF.hexTile(neighbor, dispersion.magnitude, dispersion, this.owner);
 

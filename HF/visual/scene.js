@@ -48,7 +48,7 @@ HF.visual.scene = function(origin, flatTop)
             var y = (pixelPoint.y - origin.y) / size;
             var q = m.b0 * x + m.b1 * y;
             var s = m.b2 * x + m.b3 * y;
-            return HF.hexPoint(q, -q - s, s);
+            return new HF.hexPoint(q, -q - s, s);
         },
         
         getHexCorners: function(hexPoint)
