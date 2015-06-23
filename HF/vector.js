@@ -3,11 +3,17 @@ window.HF = window.HF || {};
 
 HF.vector = function(direction, magnitude)
 {
-    if (magnitude != undefined && isNaN(magnitude))
+    var debug = HF.config.debug === true;
+
+    if (debug)
     {
-        console.error('HF.vector - invalid argument - returning null');
-        return null;
+        if (magnitude != undefined && isNaN(magnitude))
+        {
+            console.error('HF.vector - invalid argument - returning null');
+            return null;
+        }
     }
+
 
     return {
         direction: direction || HF.hexPoint(),
@@ -15,10 +21,13 @@ HF.vector = function(direction, magnitude)
 
         add: function(otherVector)
         {
-            if (otherVector == undefined)
+            if (debug)
             {
-                console.error('HF.vector.add - invalid argument - returning null');
-                return null;
+                if (otherVector == undefined)
+                {
+                    console.error('HF.vector.add - invalid argument - returning null');
+                    return null;
+                }
             }
 
             var thisPath = this.direction.scale(this.magnitude);
