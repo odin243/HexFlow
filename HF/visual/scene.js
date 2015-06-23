@@ -33,8 +33,8 @@ HF.visual.scene = function(origin, flatTop)
             var size = this.size;
             //var x = this.size * Math.sqrt(1.5) * (hexPoint.r - hexPoint.q);
             //var y = this.size * (0.5 * (hexPoint.r + hexPoint.q) - hexPoint.s);
-            var x = (m.f0 * hexPoint.q + m.f1 * hexPoint.r) * size;
-            var y = (m.f2 * hexPoint.q + m.f3 * hexPoint.r) * size;
+            var x = (m.f0 * hexPoint.q + m.f1 * hexPoint.s) * size;
+            var y = (m.f2 * hexPoint.q + m.f3 * hexPoint.s) * size;
             return HF.visual.point(x, y).add(this.origin);
         },
 
@@ -47,8 +47,8 @@ HF.visual.scene = function(origin, flatTop)
             var x = (pixelPoint.x - origin.x) / size;
             var y = (pixelPoint.y - origin.y) / size;
             var q = m.b0 * x + m.b1 * y;
-            var r = m.b2 * x + m.b3 * y;
-            return HF.hexPoint(q, r, -q - r);
+            var s = m.b2 * x + m.b3 * y;
+            return HF.hexPoint(q, -q - s, s);
         },
         
         getHexCorners: function(hexPoint)
