@@ -19,6 +19,7 @@ HF.config = function()
 
         //The width of the hex border panels (used for showing flow direction)
         hexBorderWidth: 5,
+        //Set to -1 to turn off borders
 
         //The power amount at which a hex will appear fully shaded
         hexFullPower: 100,

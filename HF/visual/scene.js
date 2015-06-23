@@ -125,10 +125,12 @@ HF.visual.scene = function(origin, flatTop)
             {
                 return this.makeHexShapeString(tile.location);
             }
-            else
+            else if (this.borderWidth > 0)
             {
                 return this.makeSideBorderShapeString(tile.location, hexPart.index);
             }
+            else
+                return '';
         },
 
         getHexColor: function(hexTile)
@@ -159,6 +161,19 @@ HF.visual.scene = function(origin, flatTop)
             return color;
         },
 
+        getHexPartColor: function(hexPart)
+        {
+            var tile = hexPart.tile;
+            if (hexPart.index === -1)
+            {
+                return this.getHexColor(tile);
+            }
+            else
+            {
+                return this.getFlowColor(tile.flow);
+            }
+        },
+
         //Returns an array of shape strings corresponding to the hexagons on a map
         drawTiles: function(svgSelection, hexMap)
         {
@@ -171,25 +186,27 @@ HF.visual.scene = function(origin, flatTop)
                         return tile.getIdentifier();
                     });
 
-            //Draw the inner tile and the 6 side border panels
-            var newPolygonGroupSelection = polygonGroupSelection.enter()
+            //Add a group element for each tile
+            var polygonSelection = polygonGroupSelection.enter()
                 .append('g')
                 .selectAll('polygon')
                 .data(function(tile) {
-                    return [
-                        { tile: tile, index: -1, id: tile.getIdentifier() + '_body' },
-                        { tile: tile, index: 0, id: tile.getIdentifier() + '_face0' },
-                        { tile: tile, index: 1, id: tile.getIdentifier() + '_face0' },
-                        { tile: tile, index: 2, id: tile.getIdentifier() + '_face0' },
-                        { tile: tile, index: 3, id: tile.getIdentifier() + '_face0' },
-                        { tile: tile, index: 4, id: tile.getIdentifier() + '_face0' },
-                        { tile: tile, index: 5, id: tile.getIdentifier() + '_face0' }
-                    ];
-                },
-                function (hexPart) {
-                    return hexPart.id;
-                })
-                .enter()
+                        return [
+                            { tile: tile, index: -1, id: tile.getIdentifier() + '_body' },
+                            { tile: tile, index: 0, id: tile.getIdentifier() + '_face0' },
+                            { tile: tile, index: 1, id: tile.getIdentifier() + '_face1' },
+                            { tile: tile, index: 2, id: tile.getIdentifier() + '_face2' },
+                            { tile: tile, index: 3, id: tile.getIdentifier() + '_face3' },
+                            { tile: tile, index: 4, id: tile.getIdentifier() + '_face4' },
+                            { tile: tile, index: 5, id: tile.getIdentifier() + '_face5' }
+                        ];
+                    },
+                    function(hexPart) {
+                        return hexPart.id;
+                    });
+
+            //Draw the inner tile and the 6 side border panels
+            polygonSelection.enter()
                 .append('polygon')
                 .attr('id', function(hexPart) {
                     return hexPart.id;
@@ -199,8 +216,9 @@ HF.visual.scene = function(origin, flatTop)
                 });
 
             //Next update the tile attributes
-            polygonGroupSelection.attr('fill', function(tile) {
-                return scene.getHexColor(tile);
+            polygonSelection.attr('fill', function (hexPart)
+            {
+                return scene.getHexPartColor(hexPart);
             });
 
             //Remove any old tiles
