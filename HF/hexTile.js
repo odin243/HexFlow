@@ -70,7 +70,7 @@ HF.hexTile = function(location, power, flow, owner, isSource)
             var newPower = this.power;
             var newPlayer = this.player;
             //The flow left over from the previous turn should be scaled back, so that we don't continously build up speed
-            var newFlow = this.flow.scale(HF.config.flowMagnitudeSustain);
+            var newFlow = this.flow;
                         
             for (var updateIndex = 0; updateIndex < tileUpdates.length; updateIndex++)
             {
@@ -92,6 +92,9 @@ HF.hexTile = function(location, power, flow, owner, isSource)
 
             }
 
+            newFlow = newFlow.scale(HF.config.flowMagnitudeSustain);
+            newFlow = new HF.vector(newFlow.direction, Math.min(newFlow.magnitude, newPower));
+            
             return HF.hexTile(this.location, newPower, newFlow, newPlayer, this.isSource);
         }
     };
