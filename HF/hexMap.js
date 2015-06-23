@@ -20,7 +20,7 @@ HF.hexMap = function(radius, tileArray)
         }
     };
 
-    var origin = HF.hexTile(HF.hexPoint());
+    var origin = HF.hexTile(new HF.hexPoint());
     map.set(origin);
 
     for (var ringDistance = 1; ringDistance <= radius; ringDistance++)
@@ -46,7 +46,7 @@ HF.hexMap = function(radius, tileArray)
 
         getTileAtPoint: function (point)
         {
-            return this.getTileAtString(point.string);
+            return this.getTileAtString(point.toString());
         },
 
         updateTiles: function(tileUpdateDictionary)

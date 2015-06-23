@@ -3,12 +3,12 @@ window.HF = window.HF || {};
 
 HF.directions = {
     faceDirections: [
-        HF.hexPoint(1, -1, 0),
-        HF.hexPoint(0, -1, 1),
-        HF.hexPoint(-1, 0, 1),
-        HF.hexPoint(-1, 1, 0),
-        HF.hexPoint(0, 1, -1),
-        HF.hexPoint(1, 0, -1)
+        new HF.hexPoint(1, -1, 0),
+        new HF.hexPoint(0, -1, 1),
+        new HF.hexPoint(-1, 0, 1),
+        new HF.hexPoint(-1, 1, 0),
+        new HF.hexPoint(0, 1, -1),
+        new HF.hexPoint(1, 0, -1)
     ],
 
     indexToFace: [
@@ -30,12 +30,12 @@ HF.directions = {
     },
 
     axisDirections: [
-        HF.hexPoint(.5, -1, .5),
-        HF.hexPoint(-.5, -.5, 1),
-        HF.hexPoint(-1, .5, .5),
-        HF.hexPoint(-.5, 1, -.5),
-        HF.hexPoint(.5, .5, -1),
-        HF.hexPoint(1, -.5, -.5)
+        new HF.hexPoint(.5, -1, .5),
+        new HF.hexPoint(-.5, -.5, 1),
+        new HF.hexPoint(-1, .5, .5),
+        new HF.hexPoint(-.5, 1, -.5),
+        new HF.hexPoint(.5, .5, -1),
+        new HF.hexPoint(1, -.5, -.5)
     ],
 
     indexToAxis: [
