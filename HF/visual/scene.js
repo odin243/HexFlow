@@ -22,6 +22,7 @@ HF.visual.scene = function(origin, flatTop)
 
     return {
         size: HF.config.hexSize || 50,
+        borderWidth: HF.config.hexBorderWidth || 5,
         orientationOffset: isFlatLayout ? 0 : 1,
         orientation: orientation,
         origin: origin,
@@ -29,13 +30,17 @@ HF.visual.scene = function(origin, flatTop)
         //Gets the pixel coordinates of the center of the hex
         getHexCenter: function (hexPoint)
         {
-            var m = this.orientation;
-            var size = this.size;
-            //var x = this.size * Math.sqrt(1.5) * (hexPoint.r - hexPoint.q);
-            //var y = this.size * (0.5 * (hexPoint.r + hexPoint.q) - hexPoint.s);
-            var x = (m.f0 * hexPoint.q + m.f1 * hexPoint.s) * size;
-            var y = (m.f2 * hexPoint.q + m.f3 * hexPoint.s) * size;
-            return HF.visual.point(x, y).add(this.origin);
+            if (hexPoint.center == undefined)
+            {
+                var m = this.orientation;
+                var size = this.size;
+                //var x = this.size * Math.sqrt(1.5) * (hexPoint.r - hexPoint.q);
+                //var y = this.size * (0.5 * (hexPoint.r + hexPoint.q) - hexPoint.s);
+                var x = (m.f0 * hexPoint.q + m.f1 * hexPoint.s) * size;
+                var y = (m.f2 * hexPoint.q + m.f3 * hexPoint.s) * size;
+                hexPoint.center = HF.visual.point(x, y).add(this.origin);
+            }
+            return hexPoint.center;
         },
 
         //returns a hexpoint that corresponds to a given pixel location
@@ -50,26 +55,34 @@ HF.visual.scene = function(origin, flatTop)
             var s = m.b2 * x + m.b3 * y;
             return HF.hexPoint(q, -q - s, s);
         },
-        
-        getHexCorners: function(hexPoint)
+
+        getHexCornerOffset: function(cornerIndex, isBorderCorner)
         {
             var m = this.orientation;
             var size = this.size;
-            var getCornerOffset = function(cornerIndex)
+            if (isBorderCorner !== true)
+                size = size - (this.borderWidth * 2);
+            var angle = 2.0 * Math.PI * (cornerIndex + m.startAngle) / 6;
+            return HF.visual.point(size * Math.cos(angle), size * Math.sin(angle));
+        },
+        
+        getHexCorners: function(hexPoint, isBorderCorner)
+        {
+            var cornersKey = isBorderCorner === true ? 'borderCornerPoints' : 'innerCornerPoints';
+            if (hexPoint[cornersKey] == undefined)
             {
-                var angle = 2.0 * Math.PI * (cornerIndex + m.startAngle) / 6;
-                return HF.visual.point(size * Math.cos(angle), size * Math.sin(angle));
+                var center = this.getHexCenter(hexPoint);
+                var corners = [];
+                for (var i = 0; i < 6; i++)
+                {
+                    var offset = this.getHexCornerOffset(i, isBorderCorner);
+                    corners.push(center.add(offset));
+                }
+
+                hexPoint[cornersKey] = corners;
             }
 
-            var center = this.getHexCenter(hexPoint);
-            var corners = [];
-            for (var i = 0; i < 6; i++)
-            {
-                var offset = getCornerOffset(i);
-                corners.push(center.add(offset));
-            }
-
-            return corners;
+            return hexPoint[cornersKey];
         },
 
         makeHexShapeString: function(hexPoint)
@@ -79,6 +92,43 @@ HF.visual.scene = function(origin, flatTop)
                     return point.x.toFixed(3) + ',' + point.y.toFixed(3);
                 })
                 .join(' ');
+        },
+
+        //Gets the points that make up a side border panel of the hex
+        getSideBorderPoints: function(hexPoint, faceIndex)
+        {
+            var innerCorners = this.getHexCorners(hexPoint);
+            var borderCorners = this.getHexCorners(hexPoint, true);
+            var firstCornerIndex = (faceIndex + 7) % 6;
+            var secondCornerIndex = faceIndex;
+            return [
+                innerCorners[firstCornerIndex],
+                borderCorners[firstCornerIndex],
+                borderCorners[secondCornerIndex],
+                innerCorners[secondCornerIndex]
+            ];
+        },
+
+        makeSideBorderShapeString: function(hexPoint, faceIndex)
+        {
+            return this.getSideBorderPoints(hexPoint, faceIndex)
+                .map(function(point) {
+                    return point.x.toFixed(3) + ',' + point.y.toFixed(3);
+                })
+                .join(' ');
+        },
+
+        makeShapeStringForHexPart: function(hexPart)
+        {
+            var tile = hexPart.tile;
+            if (hexPart.index === -1)
+            {
+                return this.makeHexShapeString(tile.location);
+            }
+            else
+            {
+                return this.makeSideBorderShapeString(tile.location, hexPart.index);
+            }
         },
 
         getHexColor: function(hexTile)
@@ -95,35 +145,66 @@ HF.visual.scene = function(origin, flatTop)
             return color;
         },
 
+        getFlowColor: function(flow)
+        {
+            var maxMagnitude = HF.config.hexFullFlow || 100;
+            var maxColor = HF.config.hexFlowColor || '#000000';
+            var scale = d3.scale.linear()
+                .domain([0, maxMagnitude])
+                .interpolate(d3.interpolateRgb)
+                .range(['#FFFFFF', maxColor]);
+            var magnitude = Math.min(flow.magnitude, maxMagnitude);
+            magnitude = Math.max(magnitude, 0);
+            var color = scale(magnitude);
+            return color;
+        },
+
         //Returns an array of shape strings corresponding to the hexagons on a map
         drawTiles: function(svgSelection, hexMap)
         {
             var scene = this;
             var tiles = hexMap.toArray();
 
-            var polygonSelection =
-                svgSelection.selectAll('polygon')
+            var polygonGroupSelection =
+                svgSelection.selectAll('g')
                     .data(tiles, function(tile) {
                         return tile.getIdentifier();
                     });
 
-            //First draw any missing tiles
-            polygonSelection.enter()
-                .append('svg:polygon')
-                .attr('id', function(tile) {
-                    return tile.getIdentifier();
+            //Draw the inner tile and the 6 side border panels
+            var newPolygonGroupSelection = polygonGroupSelection.enter()
+                .append('g')
+                .selectAll('polygon')
+                .data(function(tile) {
+                    return [
+                        { tile: tile, index: -1, id: tile.getIdentifier() + '_body' },
+                        { tile: tile, index: 0, id: tile.getIdentifier() + '_face0' },
+                        { tile: tile, index: 1, id: tile.getIdentifier() + '_face0' },
+                        { tile: tile, index: 2, id: tile.getIdentifier() + '_face0' },
+                        { tile: tile, index: 3, id: tile.getIdentifier() + '_face0' },
+                        { tile: tile, index: 4, id: tile.getIdentifier() + '_face0' },
+                        { tile: tile, index: 5, id: tile.getIdentifier() + '_face0' }
+                    ];
+                },
+                function (hexPart) {
+                    return hexPart.id;
                 })
-                .attr('points', function(tile) {
-                    return scene.makeHexShapeString(tile.location);
+                .enter()
+                .append('polygon')
+                .attr('id', function(hexPart) {
+                    return hexPart.id;
+                })
+                .attr('points', function(hexPart) {
+                    return scene.makeShapeStringForHexPart(hexPart);
                 });
 
             //Next update the tile attributes
-            polygonSelection.attr('fill', function(tile) {
+            polygonGroupSelection.attr('fill', function(tile) {
                 return scene.getHexColor(tile);
             });
 
             //Remove any old tiles
-            polygonSelection.exit().remove();
+            polygonGroupSelection.exit().remove();
         },
 
         // containerSelector is a selector that d3 can use to find the container element
