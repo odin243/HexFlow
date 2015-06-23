@@ -75,7 +75,7 @@ HF.tests = function()
 
         directionTest: function()
         {
-            this.hexPointEqual('hex_direction', new HF.hexPoint(0, 1, -1), HF.directions.faceByIndex(2));
+            this.hexPointEqual('hex_direction', new HF.hexPoint(0, 1, -1), HF.directions.faceByIndex(4));
         },
 
         defaultVectorTest: function()
