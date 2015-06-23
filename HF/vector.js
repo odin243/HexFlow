@@ -93,8 +93,8 @@ HF.vector.prototype = {
 
         for (i = 0; i < numFaces; i++)
         {
-            var distanceFromPrimary = Math.min(Math.abs(i - indexOfPrimary), Math.abs(6 - (i - indexOfPrimary)));
-            var distanceFromSecondary = Math.min(Math.abs(i - indexOfSecondary), Math.abs(6 - (i - indexOfSecondary)));
+            var distanceFromPrimary = Math.min(Math.abs(i - indexOfPrimary), Math.abs(6 - Math.abs(i - indexOfPrimary)));
+            var distanceFromSecondary = Math.min(Math.abs(i - indexOfSecondary), Math.abs(6 - Math.abs(i - indexOfSecondary)));
 
             var primaryResult;
             if (distanceFromPrimary == 0)
