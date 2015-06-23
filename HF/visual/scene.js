@@ -180,16 +180,17 @@ HF.visual.scene = function(origin, flatTop)
             var scene = this;
             var tiles = hexMap.toArray();
 
-            var polygonGroupSelection =
+            //Add a group element for each tile
+            var groupSelection =
                 svgSelection.selectAll('g')
                     .data(tiles, function(tile) {
                         return tile.getIdentifier();
                     });
+            groupSelection.enter()
+                .append('g');
 
-            //Add a group element for each tile
-            var polygonSelection = polygonGroupSelection.enter()
-                .append('g')
-                .selectAll('polygon')
+            //Add a polygon element per hex part to each group
+            var polygonSelection = groupSelection.selectAll('polygon')
                 .data(function(tile) {
                         return [
                             { tile: tile, index: -1, id: tile.getIdentifier() + '_body' },
@@ -204,8 +205,7 @@ HF.visual.scene = function(origin, flatTop)
                     function(hexPart) {
                         return hexPart.id;
                     });
-
-            //Draw the inner tile and the 6 side border panels
+            //Draw each hex part
             polygonSelection.enter()
                 .append('polygon')
                 .attr('id', function(hexPart) {
@@ -216,13 +216,16 @@ HF.visual.scene = function(origin, flatTop)
                 });
 
             //Next update the tile attributes
-            polygonSelection.attr('fill', function (hexPart)
-            {
-                return scene.getHexPartColor(hexPart);
-            });
+            polygonSelection.attr('fill', function(hexPart) {
+                    return scene.getHexPartColor(hexPart);
+                })
+                .attr('stroke', function(hexPart) {
+                    return hexPart.index === -1 ? 'black' : 'none'
+                });
 
             //Remove any old tiles
-            polygonGroupSelection.exit().remove();
+            groupSelection.exit().remove();
+            polygonSelection.exit().remove();
         },
 
         // containerSelector is a selector that d3 can use to find the container element
