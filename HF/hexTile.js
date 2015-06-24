@@ -29,6 +29,7 @@ HF.hexTile = function(location, power, flow, owner, isSource)
             var actualFlow = new HF.vector(this.flow.direction, actualFlowMagnitude);
 
             var dispersedVectors = actualFlow.disperse();
+            dispersedVectors.push.apply(dispersedVectors, new HF.vector(new HF.hexPoint(1, -1, 0), (this.power - actualFlowMagnitude) * HF.config.standingFlowFactor).disperse(1));
 
             var updates = [];
 
@@ -56,8 +57,10 @@ HF.hexTile = function(location, power, flow, owner, isSource)
             }
 
             if (this.isSource === false)
+            {
                 //Step 3: Add an update for this tile, based on the power that has flowed out
-                updates.push(HF.hexTile(this.location, -1 * actualFlowMagnitude, null, null));
+                updates.push(HF.hexTile(this.location, -1 * (actualFlowMagnitude + (HF.config.standingFlowFactor * (this.power - actualFlowMagnitude))), null, null));
+            }
 
             return updates;
         },

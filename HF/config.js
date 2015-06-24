@@ -14,6 +14,9 @@ HF.config = function()
         //0 to 1; 1 represents no decay in magnitude, 0 represents complete loss of momentum.
         flowMagnitudeSustain: .5,
 
+        //0 to 1; 0 allows standing liquid, 1 disperses all standing liquid.
+        standingFlowFactor: 1,
+
         //The size of a hex, corner to corner
         hexSize: 30,
 

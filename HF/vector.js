@@ -52,8 +52,9 @@ HF.vector.prototype = {
 
     //This method disperses this vectors magnitude in each face direction, and returns a list of the resultant dispersed vectors
     //The total magnitude of the dispersed vectors will (approximately) equal the magnitude of this vector
-    disperse: function ()
+    disperse: function (dispersion)
     {
+        dispersion = dispersion || HF.config.flowDispersionConstant;
         if (this.dispersions == undefined)
         {
             if (this.magnitude === 0)
@@ -66,9 +67,9 @@ HF.vector.prototype = {
             var secondaryAffinity = 1 - this.direction.subtract(secondaryFace).length();
 
             var forward = 1;
-            var frontSides = forward * HF.config.flowDispersionConstant;
-            var backSides = frontSides * HF.config.flowDispersionConstant;
-            var back = backSides * HF.config.flowDispersionConstant;
+            var frontSides = forward * dispersion;
+            var backSides = frontSides * dispersion;
+            var back = backSides * dispersion;
 
             var totalDispersion = forward + (2 * frontSides) + (2 * backSides) + back;
 
