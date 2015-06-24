@@ -14,13 +14,13 @@ HF.hexMap = function(radius, tileArray)
             for (var sideOffset = 0; sideOffset < ringRadius; sideOffset++)
             {
                 var newTileLocation = ringCorner.add(HF.directions.faceByIndex(sideDirection).scale(sideOffset));
-                var newTile = HF.hexTile(newTileLocation);
+                var newTile = new HF.hexTile(newTileLocation);
                 map.set(newTile);
             }
         }
     };
 
-    var origin = HF.hexTile(new HF.hexPoint());
+    var origin = new HF.hexTile(new HF.hexPoint());
     map.set(origin);
 
     for (var ringDistance = 1; ringDistance <= radius; ringDistance++)
@@ -72,9 +72,53 @@ HF.hexMap = function(radius, tileArray)
             for (var i = 0; i < tiles.length; i++)
             {
                 var tile = tiles[i];
-                updates.push.apply(updates, tile.calcEffectOnNeighbors());
+                updates.push.apply(updates, this.calcEffectOnNeighbors(tile));
             }
             return HF.hexTileDictionary(updates);
+        },
+
+        calcEffectOnNeighbors: function (tile)
+        {
+            var dispersedVectors = tile.getDispersions();
+
+            var updates = [];
+
+            var lostPower = 0;
+
+            //Step 2: Apply the dispersed vector to each neighbor, and calculate an update tile
+            for (var i = 0; i < dispersedVectors.length; i++)
+            {
+                var dispersion = dispersedVectors[i];
+
+                //If we're not dispersing in this direction, no need to calculate an update vector
+                if (dispersion.magnitude === 0)
+                    continue;
+
+                var neighborLocation = tile.location.add(dispersion.direction).round();
+
+                var neighbor = this.getTileAtPoint(neighborLocation);
+
+                if (neighbor != null)
+                {
+                    var updateTile = new HF.hexTile(neighborLocation, dispersion.magnitude, dispersion, tile.owner);
+
+                    updates.push(updateTile);
+
+                    lostPower = lostPower + dispersion.magnitude;
+                }
+                else
+                {
+                    updates.push(new HF.hexTile(tile.location, 0, new HF.vector(dispersion.direction.invert(), dispersion.magnitude), null));
+                }
+            }
+
+            if (tile.isSource === false)
+            {
+                //Step 3: Add an update for this tile, based on the power that has flowed out
+                updates.push(new HF.hexTile(tile.location, -1 * lostPower, null, null));
+            }
+
+            return updates;
         },
 
         debugPrint: function()
