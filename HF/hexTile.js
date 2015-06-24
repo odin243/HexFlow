@@ -157,5 +157,55 @@ HF.hexTile.prototype =
         newFlow = new HF.vector(newFlow.direction, Math.min(newFlow.magnitude, newPower));
 
         return new HF.hexTile(this.location, newPower, newFlow, newOwner, this.isSource);
+    },
+
+    getHexColor: function ()
+    {
+        if (this.bodyColor == undefined)
+        {
+            var maxPower = HF.config.hexFullPower || 100;
+            var maxColor = this.owner || HF.config.hexFullColor || '#000000';
+            var scale = d3.scale.linear()
+                .domain([0, maxPower])
+                .interpolate(d3.interpolateRgb)
+                .range(['#FFFFFF', maxColor]);
+            var power = Math.min(this.power, maxPower);
+            power = Math.max(power, 0);
+            this.bodyColor = scale(power);
+        }
+        return this.bodyColor;
+    },
+
+    getFlowColor: function (faceIndex)
+    {
+        if (this.flowColor == undefined)
+            this.flowColor = {};
+
+        if (this.flowColor[faceIndex] == undefined)
+        {
+            var flow = this.flow;
+            var face = HF.directions.faceByIndex(faceIndex);
+            var flowDispersions = this.getDispersions();
+            var dispersionsTowardsFace = flowDispersions.filter(function(vector) {
+                return face.equals(vector.direction, true);
+            });
+            if (dispersionsTowardsFace.length < 1)
+            {
+                return '#FFFFFF';
+            }
+            flow = dispersionsTowardsFace[0];
+
+            var maxMagnitude = HF.config.hexFullFlow || 100;
+            var maxColor = this.owner || HF.config.hexFlowColor || '#000000';
+            var scale = d3.scale.linear()
+                .domain([0, maxMagnitude])
+                .interpolate(d3.interpolateRgb)
+                .range(['#FFFFFF', maxColor]);
+            var magnitude = Math.min(flow.magnitude, maxMagnitude);
+            magnitude = Math.max(magnitude, 0);
+            var color = scale(magnitude);
+            this.flowColor[faceIndex] = color;
+        }
+        return this.flowColor[faceIndex];
     }
 };
