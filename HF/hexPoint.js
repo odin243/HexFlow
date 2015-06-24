@@ -168,9 +168,12 @@ HF.hexPoint.prototype = {
         return new HF.hexPoint(roundedQ, roundedR, roundedS);
     },
 
-    equals: function (point)
+    equals: function (point, round)
     {
-        return this.q == point.q && this.r == point.r && this.s == point.s;
+        if (round === true)
+            return this.round().equals(point.round());
+
+        return this.q === point.q && this.r === point.r && this.s === point.s;
     }
 };
 

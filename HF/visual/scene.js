@@ -99,7 +99,7 @@ HF.visual.scene = function(origin, flatTop)
         {
             var innerCorners = this.getHexCorners(hexPoint);
             var borderCorners = this.getHexCorners(hexPoint, true);
-            var firstCornerIndex = (faceIndex + 7) % 6;
+            var firstCornerIndex = (faceIndex + 5) % 6;
             var secondCornerIndex = faceIndex;
             return [
                 innerCorners[firstCornerIndex],
@@ -147,8 +147,19 @@ HF.visual.scene = function(origin, flatTop)
             return color;
         },
 
-        getFlowColor: function(flow)
+        getFlowColor: function(flow, faceIndex)
         {
+            var face = HF.directions.faceByIndex(faceIndex);
+            var flowDispersions = flow.disperse();
+            var dispersionsTowardsFace = flowDispersions.filter(function(vector) {
+                return face.equals(vector.direction, true);
+            });
+            if (dispersionsTowardsFace.length < 1)
+            {
+                return '#FFFFFF';
+            }
+            flow = dispersionsTowardsFace[0];
+
             var maxMagnitude = HF.config.hexFullFlow || 100;
             var maxColor = HF.config.hexFlowColor || '#000000';
             var scale = d3.scale.linear()
@@ -170,7 +181,7 @@ HF.visual.scene = function(origin, flatTop)
             }
             else
             {
-                return this.getFlowColor(tile.flow);
+                return this.getFlowColor(tile.flow, hexPart.index);
             }
         },
 
@@ -220,8 +231,8 @@ HF.visual.scene = function(origin, flatTop)
                     return scene.getHexPartColor(hexPart);
                 })
                 .attr('stroke', function(hexPart) {
-                    return hexPart.index === -1 ? 'black' : 'none'
-                });
+                return hexPart.index === -1 ? 'black' : 'none';
+            });
 
             //Remove any old tiles
             groupSelection.exit().remove();
