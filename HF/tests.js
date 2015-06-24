@@ -174,8 +174,9 @@ HF.tests = function()
             }
 
             //Initialization
-            var origin = HF.hexTile(new HF.hexPoint(-10, 0, 10), 100, new HF.vector(HF.directions.face('ur'), 50), 'player1', true);
-            var map = HF.hexMap(10, [origin]);
+            var player1 = HF.hexTile(new HF.hexPoint(-1, 0, 1), 100, new HF.vector(HF.directions.face('ur'), 50), '#FF0000', true);
+            var player2 = HF.hexTile(new HF.hexPoint(1, 0, -1), 100, new HF.vector(HF.directions.face('ll'), 50), '#0000FF', true);
+            var map = HF.hexMap(1, [player1, player2]);
 
             var engine = HF.engine(map, []);
 

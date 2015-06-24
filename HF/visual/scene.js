@@ -136,7 +136,7 @@ HF.visual.scene = function(origin, flatTop)
         getHexColor: function(hexTile)
         {
             var maxPower = HF.config.hexFullPower || 100;
-            var maxColor = HF.config.hexFullColor || '#000000';
+            var maxColor = hexTile.owner || HF.config.hexFullColor || '#000000';
             var scale = d3.scale.linear()
                 .domain([0, maxPower])
                 .interpolate(d3.interpolateRgb)
@@ -147,8 +147,9 @@ HF.visual.scene = function(origin, flatTop)
             return color;
         },
 
-        getFlowColor: function(flow, faceIndex)
+        getFlowColor: function(hexTile, faceIndex)
         {
+            var flow = hexTile.flow;
             var face = HF.directions.faceByIndex(faceIndex);
             var flowDispersions = flow.disperse();
             var dispersionsTowardsFace = flowDispersions.filter(function(vector) {
@@ -161,7 +162,7 @@ HF.visual.scene = function(origin, flatTop)
             flow = dispersionsTowardsFace[0];
 
             var maxMagnitude = HF.config.hexFullFlow || 100;
-            var maxColor = HF.config.hexFlowColor || '#000000';
+            var maxColor = hexTile.owner || HF.config.hexFlowColor || '#000000';
             var scale = d3.scale.linear()
                 .domain([0, maxMagnitude])
                 .interpolate(d3.interpolateRgb)
@@ -181,7 +182,7 @@ HF.visual.scene = function(origin, flatTop)
             }
             else
             {
-                return this.getFlowColor(tile.flow, hexPart.index);
+                return this.getFlowColor(tile, hexPart.index);
             }
         },
 
