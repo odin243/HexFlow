@@ -133,111 +133,171 @@ HF.visual.scene = function(origin, flatTop)
                 return '';
         },
 
-        getHexColor: function(hexTile)
-        {
-            var maxPower = HF.config.hexFullPower || 100;
-            var maxColor = hexTile.owner || HF.config.hexFullColor || '#000000';
-            var scale = d3.scale.linear()
-                .domain([0, maxPower])
-                .interpolate(d3.interpolateRgb)
-                .range(['#FFFFFF', maxColor]);
-            var power = Math.min(hexTile.power, maxPower);
-            power = Math.max(power, 0);
-            var color = scale(power);
-            return color;
-        },
-
-        getFlowColor: function(hexTile, faceIndex)
-        {
-            var flow = hexTile.flow;
-            var face = HF.directions.faceByIndex(faceIndex);
-            var flowDispersions = hexTile.getDispersions();
-            var dispersionsTowardsFace = flowDispersions.filter(function(vector) {
-                return face.equals(vector.direction, true);
-            });
-            if (dispersionsTowardsFace.length < 1)
-            {
-                return '#FFFFFF';
-            }
-            flow = dispersionsTowardsFace[0];
-
-            var maxMagnitude = HF.config.hexFullFlow || 100;
-            var maxColor = hexTile.owner || HF.config.hexFlowColor || '#000000';
-            var scale = d3.scale.linear()
-                .domain([0, maxMagnitude])
-                .interpolate(d3.interpolateRgb)
-                .range(['#FFFFFF', maxColor]);
-            var magnitude = Math.min(flow.magnitude, maxMagnitude);
-            magnitude = Math.max(magnitude, 0);
-            var color = scale(magnitude);
-            return color;
-        },
-
         getHexPartColor: function(hexPart)
         {
             var tile = hexPart.tile;
             if (hexPart.index === -1)
             {
-                return this.getHexColor(tile);
+                return tile.getHexColor();
             }
             else
             {
-                return this.getFlowColor(tile, hexPart.index);
+                return tile.getFlowColor(hexPart.index);
             }
+        },
+
+        lastSceneData: [],
+
+        getTileData: function(hexTile)
+        {
+            var tileData = [];
+
+            tileData.push({
+                id: hexTile.getIdentifier(),
+                tileId: hexTile.getIdentifier(),
+                color: hexTile.getHexColor(),
+                border: 'black',
+                points: this.makeHexShapeString(hexTile.location)
+            });
+
+            if (this.borderWidth > 0)
+            {
+                for (var i = 0; i < 6; i++)
+                {
+                    tileData.push({
+                        id: hexTile.getIdentifier() + '_face' + i,
+                        tileId: hexTile.getIdentifier(),
+                        faceIndex: i,
+                        color: hexTile.getFlowColor(i),
+                        border: 'none',
+                        points: this.makeSideBorderShapeString(hexTile.location, i)
+                    });
+                }
+            }
+
+            return tileData;
+        },
+
+        //The scene data is a dictionary of tile IDs to an array of polygons that should be rendered for a given hex
+        getSceneData: function(hexMap)
+        {
+            var sceneData = {};
+
+            var tileDictionary = hexMap.tileDictionary.dictionary;
+            for (var tileString in tileDictionary)
+            {
+                if(!tileDictionary.hasOwnProperty(tileString))
+                    continue;
+
+                var tile = tileDictionary[tileString][0];
+
+                var tileData = this.getTileData(tile);
+
+                sceneData[tile.getIdentifier()] = tileData;
+            }
+
+            return sceneData;
+        },
+
+        isTileDataEqual: function(oldTileData, newTileData)
+        {
+            if (oldTileData == undefined)
+                return newTileData == undefined;
+
+            if (newTileData == undefined)
+                return true;
+
+            if (oldTileData.length !== newTileData.length)
+                return true;
+
+            for (var i = 0; i < newTileData.length; i++)
+            {
+                var oldPolyData = oldTileData[i];
+                var newPolyData = newTileData[i];
+
+                if (oldPolyData.id !== newPolyData.id ||
+                    oldPolyData.color !== newPolyData.color ||
+                    oldPolyData.border !== newPolyData.border ||
+                    oldPolyData.points !== newPolyData.points)
+                    return false;
+            }
+
+            return true;
+        },
+
+        diffSceneData: function(hexMap)
+        {
+            var lastSceneData = this.lastSceneData;
+            var thisSceneData = this.getSceneData(hexMap);
+
+            //If this is the first scene render, return everything
+            if (lastSceneData == undefined)
+            {
+                this.lastSceneData = thisSceneData;
+                return thisSceneData;
+            }
+
+            var tileDictionary = hexMap.tileDictionary.dictionary;
+
+            var tileStrings = d3.keys(tileDictionary);
+
+            var differentData = {};
+
+            for (var i = 0; i < tileStrings.length; i++)
+            {
+                var tileString = tileStrings[i];
+                var oldDatum = lastSceneData[tileString];
+                var newDatum = thisSceneData[tileString];
+                if (!this.isTileDataEqual(oldDatum, newDatum))
+                    differentData[tileString] = newDatum;
+            }
+
+            this.lastSceneData = thisSceneData;
+
+            return differentData;
         },
 
         //Returns an array of shape strings corresponding to the hexagons on a map
         drawTiles: function(svgSelection, hexMap)
         {
             var scene = this;
-            var tiles = hexMap.toArray();
+           
+            //var thisSceneData = scene.getSceneData(hexMap);
+            var diffSceneData = scene.diffSceneData(hexMap);
 
-            //Add a group element for each tile
-            var groupSelection =
-                svgSelection.selectAll('g')
-                    .data(tiles, function(tile) {
-                        return tile.getIdentifier();
-                    });
-            groupSelection.enter()
-                .append('g');
+            var polygonDataArray = [].concat.apply([], d3.values(diffSceneData));
 
-            //Add a polygon element per hex part to each group
-            var polygonSelection = groupSelection.selectAll('polygon')
-                .data(function(tile) {
-                        return [
-                            { tile: tile, index: -1, id: tile.getIdentifier() + '_body' },
-                            { tile: tile, index: 0, id: tile.getIdentifier() + '_face0' },
-                            { tile: tile, index: 1, id: tile.getIdentifier() + '_face1' },
-                            { tile: tile, index: 2, id: tile.getIdentifier() + '_face2' },
-                            { tile: tile, index: 3, id: tile.getIdentifier() + '_face3' },
-                            { tile: tile, index: 4, id: tile.getIdentifier() + '_face4' },
-                            { tile: tile, index: 5, id: tile.getIdentifier() + '_face5' }
-                        ];
-                    },
-                    function(hexPart) {
-                        return hexPart.id;
-                    });
+            //Add a polygon element per hex part
+            var polygonSelection = svgSelection
+                .selectAll('polygon')
+                .data(polygonDataArray,
+                function(polyData) {
+                    return polyData.id;
+                });
+
             //Draw each hex part
             polygonSelection.enter()
                 .append('polygon')
-                .attr('id', function(hexPart) {
-                    return hexPart.id;
+                .attr('id', function(polyData) {
+                    return polyData.id;
                 })
-                .attr('points', function(hexPart) {
-                    return scene.makeShapeStringForHexPart(hexPart);
+                .attr('points', function(polyData) {
+                    return polyData.points;
                 });
 
             //Next update the tile attributes
-            polygonSelection.attr('fill', function(hexPart) {
-                    return scene.getHexPartColor(hexPart);
+            polygonSelection.attr('fill', function(polyData) {
+                    return polyData.color;
                 })
-                .attr('stroke', function(hexPart) {
-                return hexPart.index === -1 ? 'black' : 'none';
-            });
+                .attr('stroke', function(polyData) {
+                return polyData.border;
+                });
+
+
 
             //Remove any old tiles
-            groupSelection.exit().remove();
-            polygonSelection.exit().remove();
+            //groupSelection.exit().remove();
+            //polygonSelection.exit().remove();
         },
 
         // containerSelector is a selector that d3 can use to find the container element
