@@ -22,7 +22,7 @@ HF.visual.scene = function(origin, flatTop)
 
     return {
         size: HF.config.hexSize || 50,
-        borderWidth: HF.config.hexBorderWidth || 5,
+        borderWidth: HF.config.hexBorderWidth === -1 ? 0 : HF.config.hexBorderWidth || 5,
         orientationOffset: isFlatLayout ? 0 : 1,
         orientation: orientation,
         origin: origin,
