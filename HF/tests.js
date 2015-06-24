@@ -195,7 +195,7 @@ HF.tests = function()
                 };
             }
 
-            engine.test(10000);
+            engine.run();
         },
 
         visualTest: function()

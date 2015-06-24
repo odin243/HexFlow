@@ -15,28 +15,33 @@ HF.engine = function(hexMap, players)
         {
             var engine = this;
             var frameRate = HF.config.frameRate || 30;
-            this.intervalId = setInterval(function() {
+            var turnRate = HF.config.turnRate || 100;
+            this.turnIntervalId = setInterval(function() {
                 engine.iterate();
+            }, 1000 / turnRate);
+            this.frameIntervalId = setInterval(function() {
+                engine.render();
             }, 1000 / frameRate);
         },
         stop: function()
         {
-            clearInterval(this.intervalId);
+            clearInterval(this.turnIntervalId);
+            clearInterval(this.frameIntervalId);
         },
-        test: function(framesToTest)
+        test: function(turnsToTest)
         {
             var engine = this;
-            var frameRate = HF.config.frameRate || 30;
-            if (framesToTest > 0)
+            var turnRate = HF.config.turnRate || 1;
+            if (turnsToTest > 0)
             {
-                engine.iterate();
+                engine.iterate(true);
                 setTimeout(function() {
-                    engine.test(framesToTest - 1);
-                }, 1000 / frameRate);
+                    engine.test(turnsToTest - 1);
+                }, 1000 / turnRate);
             }
         },
 
-        iterate: function()
+        iterate: function(doRender)
         {
             //Step 1:
             //Apply the queued inputs of all players to the current state.
@@ -64,10 +69,16 @@ HF.engine = function(hexMap, players)
 
             this.currentMap = newMap;
 
-            this.scene.drawMap(this.currentMap, 'body');
-
             if (this.hasOwnProperty('afterIterate'))
                 this.afterIterate();
+
+            if (doRender === true)
+                this.render();
+        },
+
+        render: function()
+        {
+            this.scene.drawMap(this.currentMap, 'body');
         }
 
     };

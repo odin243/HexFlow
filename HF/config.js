@@ -6,7 +6,10 @@ HF.config = function()
 {
     return {
         //Frame rate in frames per second
-        frameRate: 100,
+        frameRate: 1,
+
+        //Turn rate in turns (ticks) per second
+        turnRate: 10000,
 
         //0 to 1; 0 represents no dispersion, 1 represents complete dispersion.
         flowDispersionConstant: 0.2,
