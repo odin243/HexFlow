@@ -151,7 +151,7 @@ HF.visual.scene = function(origin, flatTop)
         {
             var flow = hexTile.flow;
             var face = HF.directions.faceByIndex(faceIndex);
-            var flowDispersions = flow.disperse();
+            var flowDispersions = hexTile.getDispersions();
             var dispersionsTowardsFace = flowDispersions.filter(function(vector) {
                 return face.equals(vector.direction, true);
             });

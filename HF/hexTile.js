@@ -21,17 +21,111 @@ HF.hexTile = function(location, power, flow, owner, isSource)
             return location.toString();
         },
 
-        calcEffectOnNeighbors: function()
+        //This method disperses this vectors magnitude in each face direction, and returns a list of the resultant dispersed vectors
+        //The total magnitude of the dispersed vectors will (approximately) equal the magnitude of this vector
+        getDispersions: function ()
         {
+            var dispersionConstant = HF.config.flowDispersionConstant;
+            var standingDispersion = HF.config.standingFlowFactor;
+
             //Step 1: Disperse the current vector in each direction
             //If we have less power than flow, then the actual flow magnitude will be equal to our power
             var actualFlowMagnitude = Math.min(this.power, this.flow.magnitude);
             var actualFlow = new HF.vector(this.flow.direction, actualFlowMagnitude);
 
-            var dispersedVectors = actualFlow.disperse();
-            dispersedVectors.push.apply(dispersedVectors, new HF.vector(new HF.hexPoint(1, -1, 0), (this.power - actualFlowMagnitude) * HF.config.standingFlowFactor).disperse(1));
+            //If we have less flow than power, then there will be some power left over, which we will disperse in all directions
+            var extraPower = standingDispersion * Math.max(this.power - actualFlowMagnitude, 0);
+            
+            if (this.dispersions == undefined)
+            {
+                var primaryFace = actualFlow.findFirstFace();
+                var primaryAffinity = 1 - actualFlow.direction.subtract(primaryFace).length();
+
+                var secondaryFace = actualFlow.findSecondFace();
+                var secondaryAffinity = 1 - actualFlow.direction.subtract(secondaryFace).length();
+
+                var forward = 1;
+                var frontSides = forward * dispersionConstant;
+                var backSides = frontSides * dispersionConstant;
+                var back = backSides * dispersionConstant;
+
+                var totalDispersion = forward + (2 * frontSides) + (2 * backSides) + back;
+
+                if (totalDispersion === 0)
+                    totalDispersion = 1;
+
+                forward = forward / totalDispersion;
+                frontSides = frontSides / totalDispersion;
+                backSides = backSides / totalDispersion;
+                back = back / totalDispersion;
+
+
+                var indexOfPrimary;
+                var indexOfSecondary;
+                var numFaces = HF.directions.faceDirections.length;
+
+                for (var i = 0; i < numFaces; i++)
+                {
+                    var face = HF.directions.faceDirections[i];
+                    if (primaryFace.equals(face))
+                        indexOfPrimary = i;
+                    if (secondaryFace.equals(face))
+                        indexOfSecondary = i;
+                }
+
+                var dispersedVectors = [];
+
+                for (i = 0; i < numFaces; i++)
+                {
+                    var distanceFromPrimary = Math.min(Math.abs(i - indexOfPrimary), Math.abs(6 - Math.abs(i - indexOfPrimary)));
+                    var distanceFromSecondary = Math.min(Math.abs(i - indexOfSecondary), Math.abs(6 - Math.abs(i - indexOfSecondary)));
+
+                    var primaryResult;
+                    if (distanceFromPrimary == 0)
+                        primaryResult = forward;
+                    else if (distanceFromPrimary == 1)
+                        primaryResult = frontSides;
+                    else if (distanceFromPrimary == 2)
+                        primaryResult = backSides;
+                    else
+                        primaryResult = back;
+
+                    primaryResult = primaryResult * primaryAffinity;
+
+                    var secondaryResult;
+                    if (distanceFromSecondary == 0)
+                        secondaryResult = forward;
+                    else if (distanceFromSecondary == 1)
+                        secondaryResult = frontSides;
+                    else if (distanceFromSecondary == 2)
+                        secondaryResult = backSides;
+                    else
+                        secondaryResult = back;
+
+                    secondaryResult = secondaryResult * secondaryAffinity;
+
+                    var combinedResult = (primaryResult + secondaryResult) * actualFlow.magnitude;
+
+                    //Now disperse the extra power as well;
+                    combinedResult = combinedResult + (extraPower / numFaces);
+
+                    var combinedVector = new HF.vector(HF.directions.faceByIndex(i), combinedResult);
+
+                    dispersedVectors.push(combinedVector);
+                }
+                this.dispersions = dispersedVectors;
+            }
+
+            return this.dispersions;
+        },
+
+        calcEffectOnNeighbors: function()
+        {
+            var dispersedVectors = this.getDispersions();
 
             var updates = [];
+
+            var lostPower = 0;
 
             //Step 2: Apply the dispersed vector to each neighbor, and calculate an update tile
             for (var i = 0; i < dispersedVectors.length; i++)
@@ -54,12 +148,14 @@ HF.hexTile = function(location, power, flow, owner, isSource)
                 var updateTile = HF.hexTile(neighbor, dispersion.magnitude, dispersion, this.owner);
 
                 updates.push(updateTile);
+
+                lostPower = lostPower + dispersion.magnitude;
             }
 
             if (this.isSource === false)
             {
                 //Step 3: Add an update for this tile, based on the power that has flowed out
-                updates.push(HF.hexTile(this.location, -1 * (actualFlowMagnitude + (HF.config.standingFlowFactor * (this.power - actualFlowMagnitude))), null, null));
+                updates.push(HF.hexTile(this.location, -1 * lostPower, null, null));
             }
 
             return updates;

@@ -15,7 +15,7 @@ HF.tests = function()
             this.directionTest();
             this.defaultVectorTest();
             this.vectorAdditionTest();
-            this.vectorDispersionTest();
+            //this.vectorDispersionTest();
             this.tileUpdateTest();
             this.visualTest();
             this.gameEngineTest();
@@ -109,23 +109,23 @@ HF.tests = function()
             Debug.writeln('');
         },
 
-        vectorDispersionTest: function()
-        {
-            Debug.writeln('vectorDispersionTest');
-            var p1 = new HF.hexPoint(1, 1, -2).toUnit();
-            var v1 = new HF.vector(p1, 10);
-            var dispersedV1 = v1.disperse();
-            var magnitude = 0;
-            for (var i = 0; i < dispersedV1.length; i++)
-            {
-                var dispersedVector = dispersedV1[i];
-                magnitude += dispersedVector.magnitude;
-                Debug.writeln(dispersedVector.direction.toString() + ': ' + dispersedVector.magnitude);
-            }
-            Debug.writeln('dispersed magnitude: ' + magnitude);
+        //vectorDispersionTest: function()
+        //{
+        //    Debug.writeln('vectorDispersionTest');
+        //    var p1 = new HF.hexPoint(1, 1, -2).toUnit();
+        //    var v1 = new HF.vector(p1, 10);
+        //    var dispersedV1 = v1.disperse();
+        //    var magnitude = 0;
+        //    for (var i = 0; i < dispersedV1.length; i++)
+        //    {
+        //        var dispersedVector = dispersedV1[i];
+        //        magnitude += dispersedVector.magnitude;
+        //        Debug.writeln(dispersedVector.direction.toString() + ': ' + dispersedVector.magnitude);
+        //    }
+        //    Debug.writeln('dispersed magnitude: ' + magnitude);
 
-            Debug.writeln('');
-        },
+        //    Debug.writeln('');
+        //},
 
         tileUpdateTest: function()
         {
@@ -174,9 +174,10 @@ HF.tests = function()
             }
 
             //Initialization
-            var player1 = HF.hexTile(new HF.hexPoint(-1, 0, 1), 100, new HF.vector(HF.directions.face('ur'), 50), '#FF0000', true);
-            var player2 = HF.hexTile(new HF.hexPoint(1, 0, -1), 100, new HF.vector(HF.directions.face('ll'), 50), '#0000FF', true);
-            var map = HF.hexMap(1, [player1, player2]);
+            var player1 = HF.hexTile(new HF.hexPoint(-5, 0, 5), 500, new HF.vector(HF.directions.face('ur'), 500), '#FF0000', true);
+            var player2 = HF.hexTile(new HF.hexPoint(0, 5, -5), 500, new HF.vector(HF.directions.face('lr'), 500), '#0000FF', true);
+            var player3 = HF.hexTile(new HF.hexPoint(5, -5, 0), 1000, new HF.vector(HF.directions.face('l'), 1000), '#FF00FF', true);
+            var map = HF.hexMap(5, [player1, player2, player3]);
 
             var engine = HF.engine(map, []);
 

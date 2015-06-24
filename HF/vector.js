@@ -50,89 +50,6 @@ HF.vector.prototype = {
         return new HF.vector(this.direction, this.magnitude * scalar);
     },
 
-    //This method disperses this vectors magnitude in each face direction, and returns a list of the resultant dispersed vectors
-    //The total magnitude of the dispersed vectors will (approximately) equal the magnitude of this vector
-    disperse: function (dispersion)
-    {
-        dispersion = dispersion || HF.config.flowDispersionConstant;
-        if (this.dispersions == undefined)
-        {
-            if (this.magnitude === 0)
-                return [];
-
-            var primaryFace = this.findFirstFace();
-            var primaryAffinity = 1 - this.direction.subtract(primaryFace).length();
-
-            var secondaryFace = this.findSecondFace();
-            var secondaryAffinity = 1 - this.direction.subtract(secondaryFace).length();
-
-            var forward = 1;
-            var frontSides = forward * dispersion;
-            var backSides = frontSides * dispersion;
-            var back = backSides * dispersion;
-
-            var totalDispersion = forward + (2 * frontSides) + (2 * backSides) + back;
-
-            forward = forward / totalDispersion;
-            frontSides = frontSides / totalDispersion;
-            backSides = backSides / totalDispersion;
-            back = back / totalDispersion;
-
-
-            var indexOfPrimary;
-            var indexOfSecondary;
-            var numFaces = HF.directions.faceDirections.length;
-
-            for (var i = 0; i < numFaces; i++)
-            {
-                var face = HF.directions.faceDirections[i];
-                if (primaryFace.equals(face))
-                    indexOfPrimary = i;
-                if (secondaryFace.equals(face))
-                    indexOfSecondary = i;
-            }
-
-            var dispersedVectors = [];
-
-            for (i = 0; i < numFaces; i++)
-            {
-                var distanceFromPrimary = Math.min(Math.abs(i - indexOfPrimary), Math.abs(6 - Math.abs(i - indexOfPrimary)));
-                var distanceFromSecondary = Math.min(Math.abs(i - indexOfSecondary), Math.abs(6 - Math.abs(i - indexOfSecondary)));
-
-                var primaryResult;
-                if (distanceFromPrimary == 0)
-                    primaryResult = forward;
-                else if (distanceFromPrimary == 1)
-                    primaryResult = frontSides;
-                else if (distanceFromPrimary == 2)
-                    primaryResult = backSides;
-                else
-                    primaryResult = back;
-
-                primaryResult = primaryResult * primaryAffinity;
-
-                var secondaryResult;
-                if (distanceFromSecondary == 0)
-                    secondaryResult = forward;
-                else if (distanceFromSecondary == 1)
-                    secondaryResult = frontSides;
-                else if (distanceFromSecondary == 2)
-                    secondaryResult = backSides;
-                else
-                    secondaryResult = back;
-
-                secondaryResult = secondaryResult * secondaryAffinity;
-
-                var combinedResult = (primaryResult + secondaryResult) * this.magnitude;
-
-                dispersedVectors.push(new HF.vector(HF.directions.faceByIndex(i), combinedResult));
-            }
-            this.dispersions = dispersedVectors;
-        }
-
-        return this.dispersions;
-    },
-
     findFirstFace: function ()
     {
         if (this.direction.q == 1)
@@ -177,6 +94,7 @@ HF.vector.prototype = {
             else
                 return HF.directions.face('ul');
         }
+        return new HF.hexPoint();
     },
 
     findSecondFace: function ()
@@ -223,5 +141,6 @@ HF.vector.prototype = {
             else
                 return HF.directions.face('ur');
         }
+        return new HF.hexPoint();
     }
 };
