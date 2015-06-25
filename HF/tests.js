@@ -199,7 +199,7 @@ HF.tests = function()
         {
             var map = HF.hexMap(3, [new HF.hexTile(new HF.hexPoint(), 50)]);
             var scene = HF.visual.scene(HF.visual.point(500,400));
-            scene.drawMap(map, 'body');
+            scene.drawMap(map, '.mainPanel');
         }
     };
 }();

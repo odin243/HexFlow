@@ -88,7 +88,7 @@ HF.engine = function(hexMap, players)
 
         render: function()
         {
-            this.scene.drawMap(this.currentMap, 'body');
+            this.scene.drawMap(this.currentMap, '.mainPanel');
         }
 
     };
