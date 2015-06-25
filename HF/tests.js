@@ -171,11 +171,24 @@ HF.tests = function()
 
             if (HF.config.debug === true)
             {
-                engine.afterIterate = function()
+                engine.afterIterate = function ()
                 {
-                    Debug.writeln('Updated map state with new information');
-                    engine.currentMap.debugPrint();
-                };
+                    playerInfo = {};
+                    for (var tileString in engine.currentMap.tileDictionary.dictionary)
+                    {
+                        var tile = engine.currentMap.tileDictionary.dictionary[tileString][0];
+                        playerInfo[tile.owner] = playerInfo[tile.owner] || { power: 0, tiles: 0 };
+                        playerInfo[tile.owner].power = playerInfo[tile.owner].power + tile.power;
+                        playerInfo[tile.owner].tiles = playerInfo[tile.owner].tiles + 1;
+                    }
+
+                    Debug.writeln("Powers:");
+                    for (var player in playerInfo)
+                    {
+                        Debug.writeln(player + " " + playerInfo[player].tiles + " " + playerInfo[player].power);
+                    }
+                    Debug.writeln("");
+                }
             }
 
             engine.run();
