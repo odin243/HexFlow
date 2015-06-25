@@ -77,6 +77,8 @@ HF.engine = function(hexMap, players)
             //Step 4:
             //render the new state
 
+            this.lastMap = this.currentMap;
+
             this.currentMap = newMap;
 
             if (this.hasOwnProperty('afterIterate'))
@@ -88,7 +90,7 @@ HF.engine = function(hexMap, players)
 
         render: function()
         {
-            this.scene.drawMap(this.currentMap, '.mainPanel');
+            this.scene.drawMap(this.lastMap, '.mainPanel');
         }
 
     };
