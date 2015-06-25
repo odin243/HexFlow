@@ -228,7 +228,7 @@ HF.hexTile = function(location, power, flow, owner, isSource)
                 var face = HF.directions.faceByIndex(faceIndex);
                 var flowDispersions = this.getDispersions();
                 var dispersionsTowardsFace = flowDispersions.filter(function(vector) {
-                    return face.equals(vector.direction, true);
+                    return face.equals(vector.direction);
                 });
                 if (dispersionsTowardsFace.length < 1)
                 {
