@@ -110,31 +110,59 @@ HF.hexPoint.prototype = {
         if (this.q === 0 && this.r === 0 && this.s === 0)
             return this;
 
-        var coords = { q: this.q, r: this.r, s: this.s };
-
+        var absQ = Math.abs(this.q);
+        var absR = Math.abs(this.r);
+        var absS = Math.abs(this.s);
+        
         var largestCoord;
         var smallestCoord;
-        var largestValue = 0;
-        var smallestValue = 1;
-        for (var coord in coords)
+        var middleCoord;
+        if (absQ > absR)
         {
-            var value = Math.abs(coords[coord]);
-            if (value > largestValue)
+            if (absQ > absS) //absQ > (absR, absS)
             {
-                largestValue = value;
-                largestCoord = coord;
+                largestCoord = 'q';
+                if (absR > absS) //absQ > absR > absS
+                {
+                    middleCoord = 'r';
+                    smallestCoord = 's';
+                    
+                }
+                else // absQ > absS > absR
+                {
+                    middleCoord = 's';
+                    smallestCoord = 'r';
+                }
             }
-            if (value < smallestValue)
+            else //absS > absQ > absR
             {
-                smallestValue = value;
-                smallestCoord = coord;
+                largestCoord = 's';
+                middleCoord = 'q';
+                smallestCoord = 'r';
             }
         }
-
-        var middleCoord;
-        for (var coord in coords)
+        else //absR > absQ
         {
-            middleCoord = coord != largestCoord && coord != smallestCoord ? coord : middleCoord;
+            if (absR > absS) //absR > (absQ, absS)
+            {
+                largestCoord = 'r';
+                if (absQ > absS) //absR > absQ > absS
+                {
+                    middleCoord = 'q';
+                    smallestCoord = 's';
+                }
+                else //absR > absS > absQ
+                {
+                    middleCoord = 's';
+                    smallestCoord = 'q';
+                }
+            }
+            else //absS > absR > absQ
+            {
+                largestCoord = 's';
+                middleCoord = 'r';
+                smallestCoord = 'q';
+            }
         }
 
         var newCoords = {};
