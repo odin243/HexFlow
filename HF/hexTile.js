@@ -1,13 +1,13 @@
 ﻿//HF Namespace
 window.HF = window.HF || {};
 
-HF.hexTile = function(location, power, flow, owner, isSource)
+HF.hexTile = function (location, power, flow, owner, sourcePower)
 {
     this.location = location;
     this.power = power || 0;
     this.flow = flow || new HF.vector();
     this.owner = owner || null;
-    this.isSource = isSource || false;
+    this.sourcePower = sourcePower || 0;
 
 };
 
@@ -38,81 +38,94 @@ HF.hexTile.prototype =
 
         if (this.dispersions == undefined)
         {
-            var primaryFace = actualFlow.findFirstFace();
-            var primaryAffinity = 1 - actualFlow.direction.subtract(primaryFace).length();
-
-            var secondaryFace = actualFlow.findSecondFace();
-            var secondaryAffinity = 1 - actualFlow.direction.subtract(secondaryFace).length();
-
-            var forward = 1;
-            var frontSides = forward * dispersionConstant;
-            var backSides = frontSides * dispersionConstant;
-            var back = backSides * dispersionConstant;
-
-            var totalDispersion = forward + (2 * frontSides) + (2 * backSides) + back;
-
-            if (totalDispersion === 0)
-                totalDispersion = 1;
-
-            forward = forward / totalDispersion;
-            frontSides = frontSides / totalDispersion;
-            backSides = backSides / totalDispersion;
-            back = back / totalDispersion;
-
-
-            var indexOfPrimary;
-            var indexOfSecondary;
-            var numFaces = HF.directions.faceDirections.length;
-
-            for (var i = 0; i < numFaces; i++)
-            {
-                var face = HF.directions.faceDirections[i];
-                if (primaryFace.equals(face))
-                    indexOfPrimary = i;
-                if (secondaryFace.equals(face))
-                    indexOfSecondary = i;
-            }
-
             var dispersedVectors = [];
-
-            for (i = 0; i < numFaces; i++)
+            
+            if (this.isSource && this.flow.direction.length() == 0)
             {
-                var distanceFromPrimary = Math.min(Math.abs(i - indexOfPrimary), Math.abs(6 - Math.abs(i - indexOfPrimary)));
-                var distanceFromSecondary = Math.min(Math.abs(i - indexOfSecondary), Math.abs(6 - Math.abs(i - indexOfSecondary)));
-
-                var primaryResult;
-                if (distanceFromPrimary == 0)
-                    primaryResult = forward;
-                else if (distanceFromPrimary == 1)
-                    primaryResult = frontSides;
-                else if (distanceFromPrimary == 2)
-                    primaryResult = backSides;
-                else
-                    primaryResult = back;
-
-                primaryResult = primaryResult * primaryAffinity;
-
-                var secondaryResult;
-                if (distanceFromSecondary == 0)
-                    secondaryResult = forward;
-                else if (distanceFromSecondary == 1)
-                    secondaryResult = frontSides;
-                else if (distanceFromSecondary == 2)
-                    secondaryResult = backSides;
-                else
-                    secondaryResult = back;
-
-                secondaryResult = secondaryResult * secondaryAffinity;
-
-                var combinedResult = (primaryResult + secondaryResult) * actualFlow.magnitude;
-
-                //Now disperse the extra power as well;
-                combinedResult = combinedResult + (extraPower / numFaces);
-
-                var combinedVector = new HF.vector(HF.directions.faceByIndex(i), combinedResult);
-
-                dispersedVectors.push(combinedVector);
+                var numFaces = HF.directions.faceDirections.length;
+                for (var i = 0; i < numFaces; i++)
+                {
+                    dispersedVectors.push(new HF.vector(HF.directions.faceByIndex(i), actualFlowMagnitude / numFaces));
+                }
             }
+            else
+            {
+                var primaryFace = actualFlow.findFirstFace();
+                var primaryAffinity = 1 - actualFlow.direction.subtract(primaryFace).length();
+
+                var secondaryFace = actualFlow.findSecondFace();
+                var secondaryAffinity = 1 - actualFlow.direction.subtract(secondaryFace).length();
+
+                var forward = 1;
+                var frontSides = forward * dispersionConstant;
+                var backSides = frontSides * dispersionConstant;
+                var back = backSides * dispersionConstant;
+
+                var totalDispersion = forward + (2 * frontSides) + (2 * backSides) + back;
+
+                if (totalDispersion === 0)
+                    totalDispersion = 1;
+
+                forward = forward / totalDispersion;
+                frontSides = frontSides / totalDispersion;
+                backSides = backSides / totalDispersion;
+                back = back / totalDispersion;
+
+
+                var indexOfPrimary;
+                var indexOfSecondary;
+                var numFaces = HF.directions.faceDirections.length;
+
+                for (var i = 0; i < numFaces; i++)
+                {
+                    var face = HF.directions.faceDirections[i];
+                    if (primaryFace.equals(face))
+                        indexOfPrimary = i;
+                    if (secondaryFace.equals(face))
+                        indexOfSecondary = i;
+                }
+
+                for (i = 0; i < numFaces; i++)
+                {
+                    var distanceFromPrimary = Math.min(Math.abs(i - indexOfPrimary), Math.abs(6 - Math.abs(i - indexOfPrimary)));
+                    var distanceFromSecondary = Math.min(Math.abs(i - indexOfSecondary), Math.abs(6 - Math.abs(i - indexOfSecondary)));
+
+                    var primaryResult;
+                    if (distanceFromPrimary == 0)
+                        primaryResult = forward;
+                    else if (distanceFromPrimary == 1)
+                        primaryResult = frontSides;
+                    else if (distanceFromPrimary == 2)
+                        primaryResult = backSides;
+                    else
+                        primaryResult = back;
+
+                    primaryResult = primaryResult * primaryAffinity;
+
+                    var secondaryResult;
+                    if (distanceFromSecondary == 0)
+                        secondaryResult = forward;
+                    else if (distanceFromSecondary == 1)
+                        secondaryResult = frontSides;
+                    else if (distanceFromSecondary == 2)
+                        secondaryResult = backSides;
+                    else
+                        secondaryResult = back;
+
+                    secondaryResult = secondaryResult * secondaryAffinity;
+
+                    var combinedResult = (primaryResult + secondaryResult) * actualFlow.magnitude;
+
+                    //Now disperse the extra power as well;
+                    if (!this.isSource)
+                        combinedResult = combinedResult + (extraPower / numFaces);
+
+                    var combinedVector = new HF.vector(HF.directions.faceByIndex(i), combinedResult);
+
+                    dispersedVectors.push(combinedVector);
+                }
+            }
+
             this.dispersions = dispersedVectors;
         }
 
@@ -121,8 +134,8 @@ HF.hexTile.prototype =
 
     applyUpdates: function (tileUpdates)
     {
-        if (this.isSource === true)
-            return this;
+        //if (this.isSource === true)
+        //    return this;
 
         var newPower = this.power;
         var newOwner = this.owner;
@@ -154,9 +167,9 @@ HF.hexTile.prototype =
         }
 
         newFlow = newFlow.scale(HF.config.flowMagnitudeSustain);
-        newFlow = new HF.vector(newFlow.direction, Math.min(newFlow.magnitude, newPower));
+        newFlow = this.isSource ? new HF.vector(this.flow.direction, Math.min(this.sourcePower, newPower)) : new HF.vector(newFlow.direction, Math.min(newFlow.magnitude, newPower));
 
-        return new HF.hexTile(this.location, newPower, newFlow, newOwner, this.isSource);
+        return new HF.hexTile(this.location, newPower, newFlow, newOwner, this.sourcePower);
     },
 
     getHexColor: function ()
@@ -209,3 +222,7 @@ HF.hexTile.prototype =
         return this.flowColor[faceIndex];
     }
 };
+
+Object.defineProperty(HF.hexTile.prototype, 'isSource', {
+    get: function () { return this.sourcePower > 0;}
+});
