@@ -98,7 +98,7 @@ HF.hexMap = function(radius, tileArray)
 
                 var neighbor = this.getTileAtPoint(neighborLocation);
 
-                if (neighbor != null)
+                if (neighbor != null || HF.config.allowFlowOffMap)
                 {
                     var updateTile = new HF.hexTile(neighborLocation, dispersion.magnitude, dispersion, tile.owner);
 
