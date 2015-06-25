@@ -5,7 +5,7 @@ window.HF = window.HF || {};
 HF.config =
 {
     //Frame rate in frames per second
-    frameRate: 1,
+    frameRate: 10,
 
     //Turn rate in turns (ticks) per second
     turnRate: 100,
@@ -14,16 +14,16 @@ HF.config =
     flowDispersionConstant: 0.2,
 
     //0 to 1; 1 represents no decay in magnitude, 0 represents complete loss of momentum.
-    flowMagnitudeSustain: 1,
+    flowMagnitudeSustain: .8,
 
     //0 to 1; 0 allows standing liquid, 1 disperses all standing liquid.
-    standingFlowFactor: .3,
+    standingFlowFactor: 1,
 
     //The size of a hex, corner to corner
     hexSize: 20,
 
     //The width of the hex border panels (used for showing flow direction)
-    hexBorderWidth: 2,
+    hexBorderWidth: -1,
     //Set to -1 to turn off borders
 
     //The power amount at which a hex will appear fully shaded

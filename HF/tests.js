@@ -156,10 +156,11 @@ HF.tests = function()
             }
 
             //Initialization
-            var player1 = new HF.hexTile(new HF.hexPoint(-10, 0, 10), 1000, new HF.vector(HF.directions.face('r'), 1000), '#FF0000', true);
-            var player2 = new HF.hexTile(new HF.hexPoint(0, 10, -10), 1000, new HF.vector(HF.directions.face('ll'), 100), '#0000FF', true);
-            var player3 = new HF.hexTile(new HF.hexPoint(10, -10, 0), 1000, new HF.vector(HF.directions.face('ul'), 100), '#00FF00', true);
-            var map = HF.hexMap(10, [player1, player2, player3]);
+            var player1 = new HF.hexTile(new HF.hexPoint(-10, 0, 10), 1000, new HF.vector(HF.directions.face('r'), 100), '#FF0000', 100);
+            var player2 = new HF.hexTile(new HF.hexPoint(0, 10, -10), 1000, new HF.vector(HF.directions.face('ll'), 100), '#0000FF', 100);
+            var player3 = new HF.hexTile(new HF.hexPoint(10, -10, 0), 1000, new HF.vector(HF.directions.face('ul'), 100), '#00FF00', 100);
+            var player4 = new HF.hexTile(new HF.hexPoint(), 1000, new HF.vector(), '#000000', 300);
+            var map = HF.hexMap(10, [player1, player2, player3, player4]);
 
             var engine = HF.engine(map, []);
 
