@@ -274,7 +274,7 @@ HF.visual.scene = function(origin, flatTop)
                 function(polyData) {
                     return polyData.id;
                 });
-
+            
             //Draw each hex part
             polygonSelection.enter()
                 .append('polygon')
@@ -283,7 +283,9 @@ HF.visual.scene = function(origin, flatTop)
                 })
                 .attr('points', function(polyData) {
                     return polyData.points;
-                });
+                })
+                .on('mousedown', HF.input.onPolygonMouseDown.bind(HF.input))
+                .on('mouseup', HF.input.onPolygonMouseUp.bind(HF.input));
 
             //Next update the tile attributes
             polygonSelection.attr('fill', function(polyData) {

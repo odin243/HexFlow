@@ -193,5 +193,5 @@ HF.hexPoint.fromString = function(coordinates)
         return null;
     }
 
-    return new HF.hexPoint(coordinateArray[0], coordinateArray[1], coordinateArray[2]);
+    return new HF.hexPoint(parseInt(coordinateArray[0]), parseInt(coordinateArray[1]), parseInt(coordinateArray[2]));
 };
