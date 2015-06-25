@@ -25,19 +25,19 @@ HF.hexTile.prototype =
     //The total magnitude of the dispersed vectors will (approximately) equal the magnitude of this vector
     getDispersions: function ()
     {
-        var dispersionConstant = HF.config.flowDispersionConstant;
-        var standingDispersion = HF.config.standingFlowFactor;
-
-        //Step 1: Disperse the current vector in each direction
-        //If we have less power than flow, then the actual flow magnitude will be equal to our power
-        var actualFlowMagnitude = Math.min(this.power, this.flow.magnitude);
-        var actualFlow = new HF.vector(this.flow.direction, actualFlowMagnitude);
-
-        //If we have less flow than power, then there will be some power left over, which we will disperse in all directions
-        var extraPower = standingDispersion * Math.max(this.power - actualFlowMagnitude, 0);
-
         if (this.dispersions == undefined)
         {
+            var dispersionConstant = HF.config.flowDispersionConstant;
+            var standingDispersion = HF.config.standingFlowFactor;
+
+            //Step 1: Disperse the current vector in each direction
+            //If we have less power than flow, then the actual flow magnitude will be equal to our power
+            var actualFlowMagnitude = Math.min(this.power, this.flow.magnitude);
+            var actualFlow = new HF.vector(this.flow.direction, actualFlowMagnitude);
+
+            //If we have less flow than power, then there will be some power left over, which we will disperse in all directions
+            var extraPower = standingDispersion * Math.max(this.power - actualFlowMagnitude, 0);
+
             var dispersedVectors = [];
             
             if (this.isSource && this.flow.direction.length() == 0)
@@ -172,24 +172,19 @@ HF.hexTile.prototype =
         return new HF.hexTile(this.location, newPower, newFlow, newOwner, this.sourcePower);
     },
 
-    getHexColor: function ()
+    getHexColor: function (colorScale)
     {
         if (this.bodyColor == undefined)
         {
             var maxPower = HF.config.hexFullPower || 100;
-            var maxColor = this.owner || HF.config.hexFullColor || '#000000';
-            var scale = d3.scale.linear()
-                .domain([0, maxPower])
-                .interpolate(d3.interpolateRgb)
-                .range(['#FFFFFF', maxColor]);
             var power = Math.min(this.power, maxPower);
             power = Math.max(power, 0);
-            this.bodyColor = scale(power);
+            this.bodyColor = colorScale(power);
         }
         return this.bodyColor;
     },
 
-    getFlowColor: function (faceIndex)
+    getFlowColor: function (faceIndex, colorScale)
     {
         if (this.flowColor == undefined)
             this.flowColor = {};
@@ -207,16 +202,10 @@ HF.hexTile.prototype =
                 return '#FFFFFF';
             }
             flow = dispersionsTowardsFace[0];
-
             var maxMagnitude = HF.config.hexFullFlow || 100;
-            var maxColor = this.owner || HF.config.hexFlowColor || '#000000';
-            var scale = d3.scale.linear()
-                .domain([0, maxMagnitude])
-                .interpolate(d3.interpolateRgb)
-                .range(['#FFFFFF', maxColor]);
             var magnitude = Math.min(flow.magnitude, maxMagnitude);
             magnitude = Math.max(magnitude, 0);
-            var color = scale(magnitude);
+            var color = colorScale(magnitude);
             this.flowColor[faceIndex] = color;
         }
         return this.flowColor[faceIndex];

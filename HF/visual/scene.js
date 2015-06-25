@@ -20,9 +20,7 @@ HF.visual.scene = function(origin, flatTop)
         ? createOrientation(3.0 / 2.0, 0.0, Math.sqrt(3.0) / 2.0, Math.sqrt(3.0), 2.0 / 3.0, 0.0, -1.0 / 3.0, Math.sqrt(3.0) / 3.0, 0.0)
         : createOrientation(Math.sqrt(3.0), Math.sqrt(3.0) / 2.0, 0.0, 3.0 / 2.0, Math.sqrt(3.0) / 3.0, -1.0 / 3.0, 0.0, 2.0 / 3.0, 0.5);
 
-    return {
-        size: HF.config.hexSize || 50,
-        borderWidth: HF.config.hexBorderWidth === -1 ? 0 : HF.config.hexBorderWidth || 5,
+    var scene = {
         orientationOffset: isFlatLayout ? 0 : 1,
         orientation: orientation,
         origin: origin,
@@ -133,16 +131,45 @@ HF.visual.scene = function(origin, flatTop)
                 return '';
         },
 
-        getHexPartColor: function(hexPart)
+        getHexBodyColorScale: function(hexTile)
         {
-            var tile = hexPart.tile;
-            if (hexPart.index === -1)
+            this.bodyColorScales = this.bodyColorScales || {};
+            var maxColor = hexTile.owner || HF.config.hexFlowColor || '#000000';
+            this.bodyColorScales[maxColor] = this.bodyColorScales[maxColor] || {};
+            var maxPower = HF.config.hexFullPower || 100;
+            this.bodyColorScales[maxColor][maxPower] =
+                this.bodyColorScales[maxColor][maxPower] ||
+                d3.scale.linear()
+                .domain([0, maxPower])
+                .interpolate(d3.interpolateRgb)
+                .range(['#FFFFFF', maxColor]);
+            return this.bodyColorScales[maxColor][maxPower];
+        },
+
+        getHexBorderColorScale: function(hexTile)
+        {
+            this.borderColorScales = this.borderColorScales || {};
+            var maxColor = hexTile.owner || HF.config.hexFlowColor || '#000000';
+            this.borderColorScales[maxColor] = this.borderColorScales[maxColor] || {};
+            var maxMagnitude = HF.config.hexFullFlow || 100;
+            this.borderColorScales[maxColor][maxMagnitude] =
+                this.borderColorScales[maxColor][maxMagnitude] ||
+                d3.scale.linear()
+                .domain([0, maxMagnitude])
+                .interpolate(d3.interpolateRgb)
+                .range(['#FFFFFF', maxColor]);
+            return this.borderColorScales[maxColor][maxMagnitude];
+        },
+
+        getHexPartColor: function(hexTile, partIndex)
+        {
+            if (partIndex === -1 || partIndex == undefined)
             {
-                return tile.getHexColor();
+                return hexTile.getHexColor(this.getHexBodyColorScale(hexTile));
             }
             else
             {
-                return tile.getFlowColor(hexPart.index);
+                return hexTile.getFlowColor(partIndex, this.getHexBorderColorScale(hexTile));
             }
         },
 
@@ -155,7 +182,7 @@ HF.visual.scene = function(origin, flatTop)
             tileData.push({
                 id: hexTile.getIdentifier(),
                 tileId: hexTile.getIdentifier(),
-                color: hexTile.getHexColor(),
+                color: this.getHexPartColor(hexTile),
                 border: 'black',
                 points: this.makeHexShapeString(hexTile.location)
             });
@@ -168,7 +195,7 @@ HF.visual.scene = function(origin, flatTop)
                         id: hexTile.getIdentifier() + '_face' + i,
                         tileId: hexTile.getIdentifier(),
                         faceIndex: i,
-                        color: hexTile.getFlowColor(i),
+                        color: this.getHexPartColor(hexTile, i),
                         border: 'none',
                         points: this.makeSideBorderShapeString(hexTile.location, i)
                     });
@@ -322,4 +349,20 @@ HF.visual.scene = function(origin, flatTop)
         }
 
     };
+
+    Object.defineProperties(scene, {
+        'size': {
+            get: function()
+            {
+                return HF.config.hexSize || 50;
+            }
+        },
+        'borderWidth': {
+            get: function()
+            {
+                return HF.config.hexBorderWidth === -1 ? 0 : HF.config.hexBorderWidth || 5;
+            }
+        }
+    });
+    return scene;
 };
