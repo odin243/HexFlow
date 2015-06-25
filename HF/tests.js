@@ -109,24 +109,6 @@ HF.tests = function()
             Debug.writeln('');
         },
 
-        //vectorDispersionTest: function()
-        //{
-        //    Debug.writeln('vectorDispersionTest');
-        //    var p1 = new HF.hexPoint(1, 1, -2).toUnit();
-        //    var v1 = new HF.vector(p1, 10);
-        //    var dispersedV1 = v1.disperse();
-        //    var magnitude = 0;
-        //    for (var i = 0; i < dispersedV1.length; i++)
-        //    {
-        //        var dispersedVector = dispersedV1[i];
-        //        magnitude += dispersedVector.magnitude;
-        //        Debug.writeln(dispersedVector.direction.toString() + ': ' + dispersedVector.magnitude);
-        //    }
-        //    Debug.writeln('dispersed magnitude: ' + magnitude);
-
-        //    Debug.writeln('');
-        //},
-
         tileUpdateTest: function()
         {
             Debug.writeln('tileUpdateTest');
@@ -136,7 +118,7 @@ HF.tests = function()
             Debug.writeln('Initial map state');
             map.debugPrint();
 
-            var origin = HF.hexTile(new HF.hexPoint(), 21, new HF.vector(HF.directions.face('ur'), 21), 'player1');
+            var origin = new HF.hexTile(new HF.hexPoint(), 21, new HF.vector(HF.directions.face('ur'), 21), 'player1');
             var originUpdateList = HF.hexTileDictionary();
 
             originUpdateList.add(origin);
@@ -145,7 +127,7 @@ HF.tests = function()
             Debug.writeln('Updated origin to have 21 power, and flow 21 in the upper-right face direction');
             map.debugPrint();
 
-            var updates = map.getTileAtPoint(new HF.hexPoint()).calcEffectOnNeighbors();
+            var updates = map.calcEffectOnNeighbors(map.getTileAtPoint(new HF.hexPoint()));
 
             Debug.writeln('Caluculated the effect on neighbors:');
             for (var i = 0; i < updates.length; i++)
@@ -174,36 +156,50 @@ HF.tests = function()
             }
 
             //Initialization
-            var player1 = HF.hexTile(new HF.hexPoint(-5, 0, 5), 500, new HF.vector(HF.directions.face('ur'), 500), '#FF0000', true);
-            var player2 = HF.hexTile(new HF.hexPoint(0, 5, -5), 500, new HF.vector(HF.directions.face('lr'), 500), '#0000FF', true);
-            var player3 = HF.hexTile(new HF.hexPoint(5, -5, 0), 1000, new HF.vector(HF.directions.face('l'), 1000), '#FF00FF', true);
-            var map = HF.hexMap(5, [player1, player2, player3]);
+            var player1 = new HF.hexTile(new HF.hexPoint(-10, 0, 10), 1000, new HF.vector(), '#FF0000', 100);
+            var player2 = new HF.hexTile(new HF.hexPoint(0, 10, -10), 1000, new HF.vector(), '#0000FF', 100);
+            var player3 = new HF.hexTile(new HF.hexPoint(10, -10, 0), 1000, new HF.vector(), '#00FF00', 100);
+            var neutralSource = new HF.hexTile(new HF.hexPoint(), 0, new HF.vector(), null, 300);
+            var map = HF.hexMap(10, [player1, player2, player3, neutralSource]);
 
-            var engine = HF.engine(map, []);
+            HF.state.initialize(map);
 
             if (HF.config.debug === true)
             {
                 Debug.writeln('Initial map state');
-                engine.currentMap.debugPrint();
+                HF.state.engine.currentMap.debugPrint();
             }
 
             if (HF.config.debug === true)
             {
-                engine.afterIterate = function()
+                HF.state.engine.afterIterate = function ()
                 {
-                    Debug.writeln('Updated map state with new information');
-                    engine.currentMap.debugPrint();
-                };
+                    playerInfo = {};
+                    for (var tileString in engine.currentMap.tileDictionary.dictionary)
+                    {
+                        var tile = engine.currentMap.tileDictionary.dictionary[tileString][0];
+                        playerInfo[tile.owner] = playerInfo[tile.owner] || { power: 0, tiles: 0 };
+                        playerInfo[tile.owner].power = playerInfo[tile.owner].power + tile.power;
+                        playerInfo[tile.owner].tiles = playerInfo[tile.owner].tiles + 1;
+                    }
+
+                    Debug.writeln("Powers:");
+                    for (var player in playerInfo)
+                    {
+                        Debug.writeln(player + " " + playerInfo[player].tiles + " " + playerInfo[player].power);
+                    }
+                    Debug.writeln("");
+                }
             }
 
-            engine.run();
+            HF.state.start();
         },
 
         visualTest: function()
         {
-            var map = HF.hexMap(3, [HF.hexTile(new HF.hexPoint(), 50)]);
-            var scene = HF.visual.scene(HF.visual.point(500,300));
-            scene.drawMap(map, 'body');
+            var map = HF.hexMap(3, [new HF.hexTile(new HF.hexPoint(), 50)]);
+            var scene = HF.visual.scene(HF.visual.point(500,400));
+            scene.drawMap(map, '.mainPanel');
         }
     };
 }();

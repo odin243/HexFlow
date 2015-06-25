@@ -9,7 +9,7 @@ HF.engine = function(hexMap, players)
     return {
         currentMap: hexMap,
         players: players,
-        scene: HF.visual.scene(HF.visual.point(500, 300)),
+        scene: HF.visual.scene(HF.visual.point(500, 400)),
         //run is the main game loop
         run: function()
         {
@@ -53,6 +53,16 @@ HF.engine = function(hexMap, players)
             //  add update to allUpdates
             //next player
 
+            if (this.actions !== undefined)
+            {
+                while (this.actions.length > 0)
+                {
+                    var action = this.actions[0].action;
+                    action(this.actions[0].args, this.currentMap);
+                    this.actions.shift();
+                }
+            }
+
             //Step 2:
             //Iterate the current game state to produce a set of updates based on game rules
 
@@ -78,7 +88,7 @@ HF.engine = function(hexMap, players)
 
         render: function()
         {
-            this.scene.drawMap(this.currentMap, 'body');
+            this.scene.drawMap(this.currentMap, '.mainPanel');
         }
 
     };

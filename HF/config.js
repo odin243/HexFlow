@@ -2,43 +2,44 @@
 window.HF = window.HF || {};
 
 //This is a static class that holds game configuration values
-HF.config = function()
+HF.config =
 {
-    return {
-        //Frame rate in frames per second
-        frameRate: 1,
+    //Frame rate in frames per second
+    frameRate: 10,
 
-        //Turn rate in turns (ticks) per second
-        turnRate: 10000,
+    //Turn rate in turns (ticks) per second
+    turnRate: 100,
 
-        //0 to 1; 0 represents no dispersion, 1 represents complete dispersion.
-        flowDispersionConstant: 0.2,
+    //0 to 1; 0 represents no dispersion, 1 represents complete dispersion.
+    flowDispersionConstant: 0.2,
 
-        //0 to 1; 1 represents no decay in magnitude, 0 represents complete loss of momentum.
-        flowMagnitudeSustain: .5,
+    //0 to 1; 1 represents no decay in magnitude, 0 represents complete loss of momentum.
+    flowMagnitudeSustain: .8,
 
-        //0 to 1; 0 allows standing liquid, 1 disperses all standing liquid.
-        standingFlowFactor: 1,
+    //0 to 1; 0 allows standing liquid, 1 disperses all standing liquid.
+    standingFlowFactor: 1,
 
-        //The size of a hex, corner to corner
-        hexSize: 30,
+    //If true, nothing will stop power from flowing off the side of the map.
+    allowFlowOffMap: false,
 
-        //The width of the hex border panels (used for showing flow direction)
-        hexBorderWidth: 5,
-        //Set to -1 to turn off borders
+    //The size of a hex, corner to corner
+    hexSize: 20,
 
-        //The power amount at which a hex will appear fully shaded
-        hexFullPower: 100,
+    //The width of the hex border panels (used for showing flow direction)
+    hexBorderWidth: -1,
+    //Set to -1 to turn off borders
 
-        //The color used for full power.
-        hexFullColor: '#0000FF',
+    //The power amount at which a hex will appear fully shaded
+    hexFullPower: 100,
 
-        //The flow magnitude at which a hex border will appear fully shaded
-        hexFullFlow: 100,
+    //The color used for full power.
+    hexFullColor: '#0000FF',
 
-        //The color used for full flow
-        hexFlowColor: '#000000',
+    //The flow magnitude at which a hex border will appear fully shaded
+    hexFullFlow: 100,
 
-        debug: false
-    };
-}();
+    //The color used for full flow
+    hexFlowColor: '#000000',
+
+    debug: false
+};
