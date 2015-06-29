@@ -50,6 +50,11 @@ HF.vector.prototype = {
         return new HF.vector(this.direction, this.magnitude * scalar);
     },
 
+    subtract: function(otherVector)
+    {
+        return this.add(otherVector.scale(-1));
+    },
+
     findFirstFace: function ()
     {
         if (this.direction.q == 1)
