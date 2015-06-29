@@ -83,5 +83,33 @@ HF.directions = {
             : this.faceToIndex.hasOwnProperty(directionString)
             ? this.face(directionString)
             : null;
+    },
+
+    //For a given direction, returns 6 equally spaced component directions
+    //The order will be as follows: [direction, direction+60d, direction+120d,...,direction++300d]
+    //Rotating a direction 60d to the right inverts the direction and shifts each cooridinate one space right.
+    decompose: function(direction)
+    {
+        return [
+            direction,
+            new HF.hexPoint(-direction.s, -direction.q, -direction.r),
+            new HF.hexPoint(direction.r, direction.s, direction.q),
+            new HF.hexPoint(-direction.q, -direction.r, -direction.s),
+            new HF.hexPoint(direction.s, direction.q, direction.r),
+            new HF.hexPoint(-direction.r, -direction.s, -direction.q)
+        ];
+    },
+
+    rotate: function(direction, anticlockwise)
+    {
+        if (anticlockwise === true)
+        {
+            return new HF.hexPoint(-direction.r, -direction.s, -direction.q);
+        }
+        else
+        {
+            return new HF.hexPoint(-direction.s, -direction.q, -direction.r);
+        }
     }
+
 };
