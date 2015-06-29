@@ -69,7 +69,7 @@ HF.hexTileDictionary = function (tileArray)
 
         getTilesAtPoint: function (point)
         {
-            return this.getTilesAtString(point.string);
+            return this.getTilesAtString(point.toString());
         }
     };
 };
