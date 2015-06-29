@@ -337,13 +337,19 @@ HF.visual.scene = function(origin, flatTop)
         drawMap: function(hexMap, containerSelector)
         {
             var containerSelection = d3.select(containerSelector);
+
+            //Set the sizing of the scene
+            var radius = hexMap.radius;
+            var diameter = (2 * radius + 1) * 1.8 * this.size;
+            containerSelection.style('width', diameter + 'px').style('height', diameter + 'px');
+            this.origin = HF.visual.point(diameter / 2, diameter / 2);
             
             var svgSelection = containerSelection.select('svg');
             if (svgSelection.empty())
                 svgSelection = containerSelection
                     .append('svg')
-                    .attr('width', '100%')
-                    .attr('height', '100%')
+                    .style('width', '100%')
+                    .style('height', '100%')
                     .style('background-color', HF.config.gridBackgroundColor);
 
             this.drawTiles(svgSelection, hexMap);
