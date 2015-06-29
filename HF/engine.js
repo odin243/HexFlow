@@ -10,23 +10,26 @@ HF.engine = function(hexMap, players)
         currentMap: hexMap,
         players: players,
         scene: HF.visual.scene(HF.visual.point(500, 400)),
+        keepRunning: true,
         //run is the main game loop
         run: function()
         {
             var engine = this;
             var frameRate = HF.config.frameRate || 30;
             var turnRate = HF.config.turnRate || 100;
-            this.turnIntervalId = setInterval(function() {
+            engine.keepRunning = true;
+            d3.timer(function() {
                 engine.iterate();
+                return !engine.keepRunning;
             }, 1000 / turnRate);
-            this.frameIntervalId = setInterval(function() {
+            d3.timer(function() {
                 engine.render();
+                return !engine.keepRunning;
             }, 1000 / frameRate);
         },
         stop: function()
         {
-            clearInterval(this.turnIntervalId);
-            clearInterval(this.frameIntervalId);
+            this.keepRunning = false;
         },
         test: function(turnsToTest)
         {
