@@ -137,10 +137,11 @@ HF.visual.scene = function(origin, flatTop)
             var maxColor = hexTile.owner || HF.config.hexFlowColor || '#000000';
             this.bodyColorScales[maxColor] = this.bodyColorScales[maxColor] || {};
             var maxPower = HF.config.hexFullPower || 100;
+            var minPower = HF.config.hexMinPower || 0.01;
             this.bodyColorScales[maxColor][maxPower] =
                 this.bodyColorScales[maxColor][maxPower] ||
-                d3.scale.linear()
-                .domain([0, maxPower])
+                d3.scale.log()
+                .domain([minPower, maxPower])
                 .interpolate(d3.interpolateRgb)
                 .range([HF.config.gridBackgroundColor, maxColor]);
             return this.bodyColorScales[maxColor][maxPower];
@@ -152,10 +153,11 @@ HF.visual.scene = function(origin, flatTop)
             var maxColor = hexTile.owner || HF.config.hexFlowColor || '#000000';
             this.borderColorScales[maxColor] = this.borderColorScales[maxColor] || {};
             var maxMagnitude = HF.config.hexFullFlow || 100;
+            var minMagnitude = HF.config.hexMinFlow || 0.01;
             this.borderColorScales[maxColor][maxMagnitude] =
                 this.borderColorScales[maxColor][maxMagnitude] ||
-                d3.scale.linear()
-                .domain([0, maxMagnitude])
+                d3.scale.log()
+                .domain([minMagnitude, maxMagnitude])
                 .interpolate(d3.interpolateRgb)
                 .range([HF.config.gridBackgroundColor, maxColor]);
             return this.borderColorScales[maxColor][maxMagnitude];
