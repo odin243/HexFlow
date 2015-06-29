@@ -23,12 +23,16 @@ HF.config =
     allowFlowOffMap: false,
 
     //The size of a hex, corner to corner
-    hexSize: 20,
+    hexSize: 30,
 
     //The width of the hex border panels (used for showing flow direction)
-    hexBorderWidth: -1,
     //Set to -1 to turn off borders
+    hexFlowPanelWidth: 5,
 
+    sourceBorderWidth: 3,
+
+    hexBorderWidth: 1,
+    
     //The power amount at which a hex will appear fully shaded
     hexFullPower: 100,
 
@@ -41,5 +45,6 @@ HF.config =
     //The color used for full flow
     hexFlowColor: '#000000',
 
+    gridBackgroundColor: '#000000',
     debug: false
 };

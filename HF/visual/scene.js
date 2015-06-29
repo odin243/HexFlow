@@ -142,7 +142,7 @@ HF.visual.scene = function(origin, flatTop)
                 d3.scale.linear()
                 .domain([0, maxPower])
                 .interpolate(d3.interpolateRgb)
-                .range(['#FFFFFF', maxColor]);
+                .range([HF.config.gridBackgroundColor, maxColor]);
             return this.bodyColorScales[maxColor][maxPower];
         },
 
@@ -157,7 +157,7 @@ HF.visual.scene = function(origin, flatTop)
                 d3.scale.linear()
                 .domain([0, maxMagnitude])
                 .interpolate(d3.interpolateRgb)
-                .range(['#FFFFFF', maxColor]);
+                .range([HF.config.gridBackgroundColor, maxColor]);
             return this.borderColorScales[maxColor][maxMagnitude];
         },
 
@@ -184,6 +184,7 @@ HF.visual.scene = function(origin, flatTop)
                 tileId: hexTile.getIdentifier(),
                 color: this.getHexPartColor(hexTile),
                 border: 'black',
+                borderWidth: hexTile.isSource ? HF.config.sourceBorderWidth || 3 : HF.config.hexBorderWidth,
                 points: this.makeHexShapeString(hexTile.location)
             });
 
@@ -245,7 +246,8 @@ HF.visual.scene = function(origin, flatTop)
                 if (oldPolyData.id !== newPolyData.id ||
                     oldPolyData.color !== newPolyData.color ||
                     oldPolyData.border !== newPolyData.border ||
-                    oldPolyData.points !== newPolyData.points)
+                    oldPolyData.points !== newPolyData.points ||
+                    oldPolyData.borderWidth !== newPolyData.borderWidth)
                     return false;
             }
 
@@ -319,12 +321,14 @@ HF.visual.scene = function(origin, flatTop)
                     return polyData.color;
                 })
                 .attr('stroke', function(polyData) {
-                return polyData.border;
+                    return polyData.border;
+                })
+                .attr('stroke-width', function(polyData) {
+                    return polyData.borderWidth;
                 });
 
 
-
-            //Remove any old tiles
+//Remove any old tiles
             //groupSelection.exit().remove();
             //polygonSelection.exit().remove();
         },
@@ -333,19 +337,16 @@ HF.visual.scene = function(origin, flatTop)
         drawMap: function(hexMap, containerSelector)
         {
             var containerSelection = d3.select(containerSelector);
-
+            
             var svgSelection = containerSelection.select('svg');
             if (svgSelection.empty())
                 svgSelection = containerSelection
                     .append('svg')
                     .attr('width', '100%')
-                    .attr('height', '100%');
+                    .attr('height', '100%')
+                    .style('background-color', HF.config.gridBackgroundColor);
 
             this.drawTiles(svgSelection, hexMap);
-
-            svgSelection
-                .style('fill', 'none')
-                .style('stroke', 'black');
         }
 
     };
@@ -360,7 +361,7 @@ HF.visual.scene = function(origin, flatTop)
         'borderWidth': {
             get: function()
             {
-                return HF.config.hexBorderWidth === -1 ? 0 : HF.config.hexBorderWidth || 5;
+                return HF.config.hexFlowPanelWidth === -1 ? 0 : HF.config.hexFlowPanelWidth || 5;
             }
         }
     });
