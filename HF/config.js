@@ -20,7 +20,11 @@ HF.config =
     standingFlowFactor: 1,
 
     //If true, nothing will stop power from flowing off the side of the map.
-    allowFlowOffMap: false,
+    useWalls: true,
+
+    //If useWalls is true, this will determine what percentage of the flow hitting a wall will bounce back towards the center
+    //0 indicates that all extra flow stays in the edge tile, 1 indicates that all extra flow bounces back
+    wallBounceAmount: 0.1,
 
     //The size of a hex, corner to corner
     hexSize: 30,

@@ -21,7 +21,7 @@ HF.hexTile.prototype =
         return this.identifier;
     },
 
-    //This method disperses this vectors magnitude in each face direction, and returns a list of the resultant dispersed vectors
+    //This method disperses this vectors magnitude in 6 equal direction, and returns a list of the resultant dispersed vectors
     //The total magnitude of the dispersed vectors will (approximately) equal the magnitude of this vector
     getDispersions: function ()
     {
@@ -40,6 +40,7 @@ HF.hexTile.prototype =
 
             var dispersedVectors = [];
             
+            //For sources which do not have a flow, push all power equally towards all faces
             if (this.isSource && this.flow.direction.length() == 0)
             {
                 var numFaces = HF.directions.faceDirections.length;
@@ -50,12 +51,15 @@ HF.hexTile.prototype =
             }
             else
             {
-                var primaryFace = actualFlow.findFirstFace();
-                var primaryAffinity = 1 - actualFlow.direction.subtract(primaryFace).length();
+                //First decompose the flow direction into 6 equally spaced directions (though not necessarily aligned with the hex faces)
+                var decomposedFlowDirections = HF.directions.decompose(actualFlow.direction);
 
-                var secondaryFace = actualFlow.findSecondFace();
-                var secondaryAffinity = 1 - actualFlow.direction.subtract(secondaryFace).length();
+                //var primaryFace = actualFlow.findFirstFace();
+                //var primaryAffinity = 1 - actualFlow.direction.subtract(primaryFace).length();
 
+                //var secondaryFace = actualFlow.findSecondFace();
+                //var secondaryAffinity = 1 - actualFlow.direction.subtract(secondaryFace).length();
+                
                 var forward = 1;
                 var frontSides = forward * dispersionConstant;
                 var backSides = frontSides * dispersionConstant;
@@ -71,58 +75,52 @@ HF.hexTile.prototype =
                 backSides = backSides / totalDispersion;
                 back = back / totalDispersion;
 
-
-                var indexOfPrimary;
-                var indexOfSecondary;
-                var numFaces = HF.directions.faceDirections.length;
-
-                for (var i = 0; i < numFaces; i++)
+                for (i = 0; i < 6; i++)
                 {
-                    var face = HF.directions.faceDirections[i];
-                    if (primaryFace.equals(face))
-                        indexOfPrimary = i;
-                    if (secondaryFace.equals(face))
-                        indexOfSecondary = i;
-                }
+                    var dispersionFactor = 0;
+                    switch (i)
+                    {
+                        case 0:
+                        {
+                            //This is the primary direction
+                            dispersionFactor = forward;
+                            break;
+                        }
+                        case 1:
+                        case 5:
+                        {
+                            //These are the front sides
+                            dispersionFactor = frontSides;
+                            break;
+                        }
+                        case 2:
+                        case 4:
+                        {
+                            //These are the back sides
+                            dispersionFactor = backSides;
+                            break;
+                        }
+                        case 3:
+                        {
+                            //This is directly behind the flow
+                            dispersionFactor = back;
+                            break;
+                        }
+                    }
+                    var direction = decomposedFlowDirections[i];
 
-                for (i = 0; i < numFaces; i++)
-                {
-                    var distanceFromPrimary = Math.min(Math.abs(i - indexOfPrimary), Math.abs(6 - Math.abs(i - indexOfPrimary)));
-                    var distanceFromSecondary = Math.min(Math.abs(i - indexOfSecondary), Math.abs(6 - Math.abs(i - indexOfSecondary)));
-
-                    var primaryResult;
-                    if (distanceFromPrimary == 0)
-                        primaryResult = forward;
-                    else if (distanceFromPrimary == 1)
-                        primaryResult = frontSides;
-                    else if (distanceFromPrimary == 2)
-                        primaryResult = backSides;
-                    else
-                        primaryResult = back;
-
-                    primaryResult = primaryResult * primaryAffinity;
-
-                    var secondaryResult;
-                    if (distanceFromSecondary == 0)
-                        secondaryResult = forward;
-                    else if (distanceFromSecondary == 1)
-                        secondaryResult = frontSides;
-                    else if (distanceFromSecondary == 2)
-                        secondaryResult = backSides;
-                    else
-                        secondaryResult = back;
-
-                    secondaryResult = secondaryResult * secondaryAffinity;
-
-                    var combinedResult = (primaryResult + secondaryResult) * actualFlow.magnitude;
+                    var dispersionAmount = dispersionFactor * actualFlowMagnitude;
 
                     //Now disperse the extra power as well;
                     if (!this.isSource)
-                        combinedResult = combinedResult + (extraPower / numFaces);
+                        dispersionAmount = dispersionAmount + (extraPower / 6);
 
-                    var combinedVector = new HF.vector(HF.directions.faceByIndex(i), combinedResult);
+                    if (dispersionAmount !== 0)
+                    {
+                        var dispersion = new HF.vector(direction, dispersionAmount);
 
-                    dispersedVectors.push(combinedVector);
+                        dispersedVectors.push(dispersion);
+                    }
                 }
             }
 
@@ -178,7 +176,7 @@ HF.hexTile.prototype =
         {
             var maxPower = HF.config.hexFullPower || 100;
             var power = Math.min(this.power, maxPower);
-            power = Math.max(power, 0);
+            power = Math.max(power, HF.config.hexMinPower);
             this.bodyColor = colorScale(power);
         }
         return this.bodyColor;
@@ -189,25 +187,28 @@ HF.hexTile.prototype =
         if (this.flowColor == undefined)
             this.flowColor = {};
 
-        if (this.flowColor[faceIndex] == undefined)
+        var face = HF.directions.faceByIndex(faceIndex);
+        var faceString = face.toString();
+
+        if (this.flowColor[faceString] == undefined)
         {
-            var flow = this.flow;
-            var face = HF.directions.faceByIndex(faceIndex);
-            var flowDispersions = this.getDispersions();
-            var dispersionsTowardsFace = flowDispersions.filter(function(vector) {
-                    return face.equals(vector.direction);
-            });
-            if (dispersionsTowardsFace.length < 1)
-            {
+            var faceUpdates = this.updates;
+            if (faceUpdates == undefined)
                 return '#FFFFFF';
-            }
-            flow = dispersionsTowardsFace[0];
+
+            var updatesTowardsFace = faceUpdates.getTilesAtPoint(this.location.add(face));
+
+            var magnitudeTowardsFace = updatesTowardsFace.reduce(function(magnitude, updateTile) {
+                return magnitude + updateTile.flow.magnitude;
+            }, 0);
+                    
             var maxMagnitude = HF.config.hexFullFlow || 100;
-            var magnitude = Math.min(flow.magnitude, maxMagnitude);
-            magnitude = Math.max(magnitude, 0);
+            var magnitude = Math.min(magnitudeTowardsFace, maxMagnitude);
+            magnitude = Math.max(magnitude, HF.config.hexMinFlow);
             var color = colorScale(magnitude);
             this.flowColor[faceIndex] = color;
         }
+
         return this.flowColor[faceIndex];
     }
 };

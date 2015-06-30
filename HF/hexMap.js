@@ -72,53 +72,84 @@ HF.hexMap = function(radius, tileArray)
             for (var i = 0; i < tiles.length; i++)
             {
                 var tile = tiles[i];
-                updates.push.apply(updates, this.calcEffectOnNeighbors(tile));
+                updates.push.apply(updates, this.calcEffectOnNeighbors(tile).toArray());
             }
             return HF.hexTileDictionary(updates);
         },
-
+        
+        //Returns a hexTileDictionary representing the effect the given tile has on its neighbors
         calcEffectOnNeighbors: function (tile)
         {
-            var dispersedVectors = tile.getDispersions();
-
-            var updates = [];
-
-            var lostPower = 0;
-
-            //Step 2: Apply the dispersed vector to each neighbor, and calculate an update tile
-            for (var i = 0; i < dispersedVectors.length; i++)
+            if (tile.updates == undefined)
             {
-                var dispersion = dispersedVectors[i];
+                var dispersedVectors = tile.getDispersions();
 
-                //If we're not dispersing in this direction, no need to calculate an update vector
-                if (dispersion.magnitude === 0)
-                    continue;
+                var updates = HF.hexTileDictionary();
 
-                var neighborLocation = tile.location.add(dispersion.direction).round();
-
-                var neighbor = this.getTileAtPoint(neighborLocation);
-
-                if (neighbor != null || HF.config.allowFlowOffMap)
+                //Step 2: Apply the dispersed vector to each neighbor, and calculate an update tile
+                for (var i = 0; i < dispersedVectors.length; i++)
                 {
-                    var updateTile = new HF.hexTile(neighborLocation, dispersion.magnitude, dispersion, tile.owner);
+                    var dispersion = dispersedVectors[i];
 
-                    updates.push(updateTile);
+                    //If we're not dispersing in this direction, no need to calculate an update vector
+                    if (dispersion.magnitude === 0)
+                        continue;
 
-                    lostPower = lostPower + dispersion.magnitude;
+                    var updatesForDispersion = [];
+
+                    var direction1 = dispersion.findFirstFace();
+                    var magnitude1 = 1 - dispersion.direction.subtract(direction1).length();
+                    var dispersion1 = dispersion.scale(magnitude1);
+                    var direction2 = dispersion.findSecondFace();
+                    var magnitude2 = 1 - dispersion.direction.subtract(direction2).length();
+                    var dispersion2 = dispersion.scale(magnitude2);
+
+                    [].push.apply(updatesForDispersion, this.getUpdateTilesForDispersion(tile, dispersion1, direction1));
+                    [].push.apply(updatesForDispersion, this.getUpdateTilesForDispersion(tile, dispersion2, direction2));
+
+                    updates.addMany(updatesForDispersion);
                 }
-                else
+
+                var lostPower = updates.toArray().reduce(function(power, updateTile) {
+                    return power + updateTile.power;
+                }, 0);
+
+                if (tile.isSource === false && lostPower !== 0)
                 {
-                    updates.push(new HF.hexTile(tile.location, 0, new HF.vector(dispersion.direction.invert(), dispersion.magnitude), null));
+                    //Step 3: Add an update for this tile, based on the power that has flowed out
+                    updates.add(new HF.hexTile(tile.location, -1 * lostPower, null, null));
                 }
+
+                tile.updates = updates;
             }
 
-            if (tile.isSource === false)
+            return tile.updates;
+        },
+
+        getUpdateTilesForDispersion: function (tile, dispersion, neighborDirection)
+        {
+            var updateTiles = [];
+
+            var neighborLocation = tile.location.add(neighborDirection).round();
+
+            //var neighborDirection = neighborLocation.subtract(tile.location);
+
+            var neighbor = this.getTileAtPoint(neighborLocation);
+
+            if (neighbor != null || HF.config.useWalls !== true)
             {
-                //Step 3: Add an update for this tile, based on the power that has flowed out
-                updates.push(new HF.hexTile(tile.location, -1 * lostPower, null, null));
+                var flowToPropogate = new HF.vector(neighborDirection, dispersion.magnitude);//, offset);
+                var updateTile = new HF.hexTile(neighborLocation, dispersion.magnitude, dispersion, tile.owner);
+
+                updateTiles.push(updateTile);
+            }
+            else
+            {
+                var bounceAmount = dispersion.magnitude * 0.5;
+                updateTiles.push(new HF.hexTile(tile.location, bounceAmount, new HF.vector(dispersion.direction.invert(), bounceAmount), null));
             }
 
-            return updates;
+            return updateTiles;
         },
 
         debugPrint: function()
@@ -128,7 +159,7 @@ HF.hexMap = function(radius, tileArray)
             {
                 var tile = tiles[i];
 
-                Debug.writeln(tile.location.string + ' ' + tile.power);
+                Debug.writeln(tile.location.toString() + ' ' + tile.power);
             }
         },
 
