@@ -17,12 +17,13 @@ HF.engine = function(hexMap, players)
             var engine = this;
             var frameRate = HF.config.frameRate || 30;
             var turnRate = HF.config.turnRate || 100;
+
             engine.keepRunning = true;
-            d3.timer(function() {
+            setInterval(function() {
                 engine.iterate();
                 return !engine.keepRunning;
             }, 1000 / turnRate);
-            d3.timer(function() {
+            setInterval(function () {
                 engine.render();
                 return !engine.keepRunning;
             }, 1000 / frameRate);
@@ -93,7 +94,8 @@ HF.engine = function(hexMap, players)
 
         render: function()
         {
-            this.scene.drawMap(this.lastMap, '.mainPanel');
+            if (this.lastMap != undefined)
+                this.scene.drawMap(this.lastMap, '.mainPanel');
         }
 
     };
