@@ -11,7 +11,7 @@ HF.state =
         this.engine = HF.engine(map, []);
     },
 
-    start: function (map)
+    start: function ()
     {
         this.engine.run();
     },
