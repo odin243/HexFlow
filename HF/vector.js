@@ -30,24 +30,38 @@ HF.vector.prototype = {
             }
         }
 
-        var thisPath = this.direction.scale(this.magnitude);
-        var otherPath = otherVector.direction.scale(otherVector.magnitude);
+        if (this.magnitude === 0)
+            return otherVector;
 
-        var combinedPath = thisPath.add(otherPath);
+        if (otherVector.magnitude === 0)
+            return this;
 
-        var newMagnitude = combinedPath.length();
+        var thisEndPoint = this.getEndPoint();
+        var otherEndPoint = otherVector.getEndPoint();
+
+        var combinedEndPoint = thisEndPoint.add(otherEndPoint);
+
+
+        var newMagnitude = combinedEndPoint.length();
 
         if (newMagnitude < 0.01)
             return new HF.vector();
 
-        var newDirection = combinedPath.toUnit();
 
-        return new HF.vector(newDirection, newMagnitude);
+        var newDirection = combinedEndPoint.toUnit();
+
+        return new HF.vector(newDirection, newMagnitude);//, combinedOffset);
     },
 
     scale: function (scalar)
     {
         return new HF.vector(this.direction, this.magnitude * scalar);
+    },
+
+    getEndPoint: function()
+    {
+        var fromOrigin = this.direction.scale(this.magnitude);
+        return fromOrigin;
     },
 
     subtract: function(otherVector)

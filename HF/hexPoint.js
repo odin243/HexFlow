@@ -72,14 +72,8 @@ HF.hexPoint.prototype = {
 
     subtract: function (otherPoint)
     {
-        if (HF.config.debug)
-        {
-            if (otherPoint == undefined)
-            {
-                console.error('HF.hexPoint.subtract - invalid argument - returning null');
-                return null;
-            }
-        }
+        if (!otherPoint)
+            return this;
 
         return this.add(otherPoint.invert());
     },
@@ -99,7 +93,12 @@ HF.hexPoint.prototype = {
     toUnit: function ()
     {
         var magnitude = this.length();
-        var direction = magnitude !== 0 ? this.scale(1 / magnitude) : new HF.hexPoint();
+        if (magnitude === 1)
+            return this;
+        if (magnitude === 0)
+            return new HF.hexPoint();
+
+        var direction = this.scale(1 / magnitude);
         direction = direction.validate();
         return direction;
     },
