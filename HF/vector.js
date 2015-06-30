@@ -76,36 +76,36 @@ HF.vector.prototype = {
         if (this.direction.q == 1)
         {
             faceAffinities.direction1 = HF.directions.face('ur');
-            faceAffinities.direction2 = HF.direction2.face('r')
+            faceAffinities.direction2 = HF.directions.face('r');
         }
         if (this.direction.r == 1)
         {
             faceAffinities.direction1 = HF.directions.face('ul');
-            faceAffinities.direction2 = HF.direction2.face('l')
+            faceAffinities.direction2 = HF.directions.face('l');
         }
         if (this.direction.s == 1)
         {
             faceAffinities.direction1 = HF.directions.face('ll');
-            faceAffinities.direction2 = HF.direction2.face('lr')
+            faceAffinities.direction2 = HF.directions.face('lr');
         }
         if (this.direction.q == -1)
         {
             faceAffinities.direction1 = HF.directions.face('l');
-            faceAffinities.direction2 = HF.direction2.face('ll')
+            faceAffinities.direction2 = HF.directions.face('ll');
         }
         if (this.direction.r == -1)
         {
             faceAffinities.direction1 = HF.directions.face('r');
-            faceAffinities.direction2 = HF.direction2.face('lr')
+            faceAffinities.direction2 = HF.directions.face('lr');
         }
         if (this.direction.s == -1)
         {
             faceAffinities.direction1 = HF.directions.face('ul');
-            faceAffinities.direction2 = HF.direction2.face('ur')
+            faceAffinities.direction2 = HF.directions.face('ur');
         }
 
-        faceAffinities.affinity1 = 1 - this.direction.subtract(faceAffinities.direction1);
-        faceAffinities.affinity2 = 1 - this.direction.subtract(faceAffinities.direction2);
+        faceAffinities.affinity1 = 1 - this.direction.subtract(faceAffinities.direction1).length();
+        faceAffinities.affinity2 = 1 - this.direction.subtract(faceAffinities.direction2).length();
 
         return faceAffinities;
     }
