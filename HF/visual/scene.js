@@ -348,11 +348,15 @@ HF.visual.scene = function(origin, flatTop)
             
             var svgSelection = containerSelection.select('svg');
             if (svgSelection.empty())
+            {
                 svgSelection = containerSelection
                     .append('svg')
                     .style('width', '100%')
                     .style('height', '100%')
                     .style('background-color', HF.config.gridBackgroundColor);
+
+                d3.select('body').style('background-color', HF.config.gridBackgroundColor);
+            }
 
             this.drawTiles(svgSelection, hexMap);
         }
