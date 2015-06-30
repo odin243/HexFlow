@@ -92,16 +92,18 @@ HF.hexMap = function(radius, tileArray)
                     var dispersion = dispersedVectors[i];
 
                     //If we're not dispersing in this direction, no need to calculate an update vector
-                    if (dispersion.magnitude === 0)
+                    if (dispersion.direction.length() === 0 || dispersion.magnitude === 0)
                         continue;
 
                     var updatesForDispersion = [];
 
-                    var direction1 = dispersion.findFirstFace();
-                    var magnitude1 = 1 - dispersion.direction.subtract(direction1).length();
+                    var faceAffinities = dispersion.getFaceAffinities();
+
+                    var direction1 = faceAffinities.direction1;
+                    var magnitude1 = faceAffinities.affinity1;
                     var dispersion1 = dispersion.scale(magnitude1);
-                    var direction2 = dispersion.findSecondFace();
-                    var magnitude2 = 1 - dispersion.direction.subtract(direction2).length();
+                    var direction2 = faceAffinities.direction2;
+                    var magnitude2 = faceAffinities.affinity2;
                     var dispersion2 = dispersion.scale(magnitude2);
 
                     [].push.apply(updatesForDispersion, this.getUpdateTilesForDispersion(tile, dispersion1, direction1));
@@ -117,7 +119,7 @@ HF.hexMap = function(radius, tileArray)
                 if (tile.isSource === false && lostPower !== 0)
                 {
                     //Step 3: Add an update for this tile, based on the power that has flowed out
-                    updates.add(new HF.hexTile(tile.location, -1 * lostPower, null, null));
+                    updates.add(new HF.hexTile(tile.location, lostPower, null, null));
                 }
 
                 tile.updates = updates;

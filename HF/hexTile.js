@@ -140,28 +140,56 @@ HF.hexTile.prototype =
         //The flow left over from the previous turn should be scaled back, so that we don't continously build up speed
         var newFlow = this.flow;
 
+        var playerPower = {};
+        if (this.owner != null)
+            playerPower[this.owner] = this.power;
+
         for (var updateIndex = 0; updateIndex < tileUpdates.length; updateIndex++)
         {
             var tileUpdate = tileUpdates[updateIndex];
 
-            if (tileUpdate.owner == null)
-                newPower = Math.max(newPower + tileUpdate.power, 0);
-            else if (newOwner == null || newOwner === tileUpdate.owner)
-            {
-                newOwner = tileUpdate.owner;
-                newPower = newPower + tileUpdate.power;
-            }
-            else
-                newPower = newPower - tileUpdate.power;
-
-            if (newPower < 0)
-            {
-                newOwner = tileUpdate.owner;
-                newPower = Math.abs(newPower);
-            }
+            playerPower[tileUpdate.owner] = playerPower[tileUpdate.owner] || 0;
+            playerPower[tileUpdate.owner] += tileUpdate.power;
 
             newFlow = newFlow.add(tileUpdate.flow);
 
+        }
+
+        if (this.owner != null)
+        {
+            var newPower = 0;
+
+            for (var playerKey in playerPower)
+            {
+                newPower += playerPower[playerKey] * (playerKey === this.owner ? 1 : -1);
+            }
+
+            if (newPower <= 0)
+                newOwner = null;
+        }
+        else
+        {
+            var biggestPlayer;
+            var biggestPower = 0;
+
+            for (var playerKey in playerPower)
+            {
+                if (playerPower[playerKey] > biggestPower)
+                {
+                    biggestPower = playerPower[playerKey];
+                    biggestPlayer = playerKey;
+                }
+            }
+
+            newOwner = biggestPlayer;
+
+            for (var playerKey in playerPower)
+            {
+                newPower += playerPower[playerKey] * (playerKey === newOwner ? 1 : -1);
+            }
+
+            if (newPower <= 0)
+                newOwner = null;
         }
 
         newFlow = newFlow.scale(HF.config.flowMagnitudeSustain);
