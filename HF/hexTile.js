@@ -161,7 +161,8 @@ HF.hexTile.prototype =
 
             for (var playerKey in playerPower)
             {
-                newPower += playerPower[playerKey] * (playerKey === this.owner ? 1 : -1);
+                if (!(playerKey == 'null' && this.isSource))
+                    newPower += playerPower[playerKey] * (playerKey === this.owner ? 1 : -1);
             }
 
             if (newPower <= 0)
