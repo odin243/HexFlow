@@ -73,36 +73,38 @@ HF.vector.prototype = {
     {
         var faceAffinities = {};
 
-        if (this.direction.q == 1)
+        if (Math.abs(this.direction.q - 1) < 0.001)
         {
             faceAffinities.direction1 = HF.directions.face('ur');
             faceAffinities.direction2 = HF.directions.face('r');
         }
-        if (this.direction.r == 1)
+        else if (Math.abs(this.direction.r - 1) < 0.001)
         {
             faceAffinities.direction1 = HF.directions.face('ul');
             faceAffinities.direction2 = HF.directions.face('l');
         }
-        if (this.direction.s == 1)
+        else if (Math.abs(this.direction.s - 1) < 0.001)
         {
             faceAffinities.direction1 = HF.directions.face('ll');
             faceAffinities.direction2 = HF.directions.face('lr');
         }
-        if (this.direction.q == -1)
+        else if (Math.abs(this.direction.q + 1) < 0.001)
         {
             faceAffinities.direction1 = HF.directions.face('l');
             faceAffinities.direction2 = HF.directions.face('ll');
         }
-        if (this.direction.r == -1)
+        else if (Math.abs(this.direction.r + 1) < 0.001)
         {
             faceAffinities.direction1 = HF.directions.face('r');
             faceAffinities.direction2 = HF.directions.face('lr');
         }
-        if (this.direction.s == -1)
+        else if (Math.abs(this.direction.s + 1) < 0.001)
         {
             faceAffinities.direction1 = HF.directions.face('ul');
             faceAffinities.direction2 = HF.directions.face('ur');
         }
+        else
+            throw 'Invalid Direction';
 
         faceAffinities.affinity1 = 1 - this.direction.subtract(faceAffinities.direction1).length();
         faceAffinities.affinity2 = 1 - this.direction.subtract(faceAffinities.direction2).length();
