@@ -1,32 +1,62 @@
 ﻿//HF Namespace
 window.HF = window.HF || {};
 
-HF.hexMap = function(radius, tileArray)
-{
-    var map = HF.hexTileDictionary();
-
-    var addRing = function(ringRadius)
+HF.hexMapGenerator = {
+    radius: function(radius)
     {
-        for (var side = 0; side < 6; side++)
+        var mapTiles = [];
+
+        for (var q = -radius; q <= radius; q++)
         {
-            var sideDirection = (side + 2) % 6;
-            var ringCorner = HF.directions.faceByIndex(side).scale(ringRadius);
-            for (var sideOffset = 0; sideOffset < ringRadius; sideOffset++)
+            var r1 = Math.max(-radius, -q - radius);
+            var r2 = Math.min(radius, -q + radius);
+            for (var r = r1; r <= r2; r++)
             {
-                var newTileLocation = ringCorner.add(HF.directions.faceByIndex(sideDirection).scale(sideOffset));
-                var newTile = new HF.hexTile(newTileLocation);
-                map.set(newTile);
+                mapTiles.push(new HF.hexTile(new HF.hexPoint(q, r, -q - r)));
             }
         }
-    };
 
-    var origin = new HF.hexTile(new HF.hexPoint());
-    map.set(origin);
-
-    for (var ringDistance = 1; ringDistance <= radius; ringDistance++)
+        return HF.hexMap(mapTiles);
+    },
+    rectangle: function(width, height)
     {
-        addRing(ringDistance);
+        var mapTiles = [];
+
+        for (var s = 0; s < height; s++)
+        {
+            var sOffset = Math.floor(-s/2);
+            for (var q = sOffset; q < width + sOffset; q++)
+            {
+                mapTiles.push(new HF.hexTile(new HF.hexPoint(q, -s - q, s)));
+            }
+        }
+
+        return HF.hexMap(mapTiles);
+    },
+    parallelogram: function(width, height)
+    {
+        var mapTiles = [];
+
+        var q2 = Math.floor(width / 2);
+        var q1 = -q2;Math.floor(width / 2);
+        var r2 = Math.floor(height / 2);
+        var r1 = -r2;
+        for (var q = q1; q <= q2; q++)
+        {
+            for (var r = r1; r <= r2; r++)
+            {
+                mapTiles.push(new HF.hexTile(new HF.hexPoint(q, r, -q - r)));
+            }
+        }
+
+        return HF.hexMap(mapTiles);
+
     }
+}
+
+HF.hexMap = function(tileArray)
+{
+    var map = HF.hexTileDictionary();
 
     //If a list or array was passed in, replace those specific tiles with the ones passed in
     if (tileArray != undefined && tileArray.length != undefined)
@@ -37,7 +67,12 @@ HF.hexMap = function(radius, tileArray)
     return {
         tileDictionary: map,
 
-        radius: radius,
+        //radius: radius,
+
+        initialize: function(tileArray)
+        {
+            this.tileDictionary.setMany(tileArray);
+        },
 
         getTileAtString: function (pointString)
         {
@@ -62,7 +97,7 @@ HF.hexMap = function(radius, tileArray)
                 newTiles.push(updatedTile);
             }
 
-            return HF.hexMap(this.radius, newTiles);
+            return HF.hexMap(newTiles);
         },
 
         calculateAllTileEffects: function()
@@ -161,9 +196,12 @@ HF.hexMap = function(radius, tileArray)
         {
             var currentLocation = location;
 
-            while (currentLocation.length() < this.radius + 0.5)
+            while (true)
             {
-                currentLocation = currentLocation.add(direction);
+                var nextLocation = currentLocation.add(direction);
+                if(this.getTileAtPoint(nextLocation) == undefined)
+                    break;
+                currentLocation = nextLocation;
             }
 
             return currentLocation.round();

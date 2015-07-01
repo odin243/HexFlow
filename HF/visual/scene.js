@@ -5,7 +5,7 @@ window.HF.visual = window.HF.visual || {};
 //origin (required) - the pixel location of the center of the scene
 //scale (optional) - if not provided, HF.configl.hexScale will be used
 //flatTop (optional) - if true, flat topped hexes will be used. Pointy topped hexes are the default.
-HF.visual.scene = function(origin, flatTop)
+HF.visual.scene = function(flatTop)
 {
     //this creates an orientation matrix object
     var createOrientation = function(f0, f1, f2, f3, b0, b1, b2, b3, startAngle)
@@ -23,7 +23,7 @@ HF.visual.scene = function(origin, flatTop)
     var scene = {
         orientationOffset: isFlatLayout ? 0 : 1,
         orientation: orientation,
-        origin: origin,
+        //origin: origin,
 
         //Gets the pixel coordinates of the center of the hex
         getHexCenter: function (hexPoint)
@@ -187,7 +187,8 @@ HF.visual.scene = function(origin, flatTop)
                 color: this.getHexPartColor(hexTile),
                 border: 'black',
                 borderWidth: hexTile.isSource ? HF.config.sourceBorderWidth || 3 : HF.config.hexBorderWidth,
-                points: this.makeHexShapeString(hexTile.location)
+                points: this.makeHexShapeString(hexTile.location),
+                power: hexTile.power
             });
 
             if (this.borderWidth > 0)
@@ -200,7 +201,8 @@ HF.visual.scene = function(origin, flatTop)
                         faceIndex: i,
                         color: this.getHexPartColor(hexTile, i),
                         border: 'none',
-                        points: this.makeSideBorderShapeString(hexTile.location, i)
+                        points: this.makeSideBorderShapeString(hexTile.location, i),
+                        power: hexTile.faceFlows[i]
                     });
                 }
             }
@@ -341,7 +343,7 @@ HF.visual.scene = function(origin, flatTop)
             var containerSelection = d3.select(containerSelector);
 
             //Set the sizing of the scene
-            var radius = hexMap.radius;
+            var radius = 10;//hexMap.radius;
             var diameter = (2 * radius + 1) * 1.8 * this.size;
             containerSelection.style('width', diameter + 'px').style('height', diameter + 'px');
             this.origin = HF.visual.point(diameter / 2, diameter / 2);
@@ -359,6 +361,16 @@ HF.visual.scene = function(origin, flatTop)
             }
 
             this.drawTiles(svgSelection, hexMap);
+        },
+
+        clear: function(containerSelector)
+        {
+            var containerSelection = d3.select(containerSelector);
+            var svgSelection = containerSelection.select('svg');
+            if (!svgSelection.empty())
+            {
+                svgSelection.selectAll('*').remove();
+            }
         }
 
     };

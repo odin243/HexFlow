@@ -113,7 +113,7 @@ HF.tests = function()
         {
             Debug.writeln('tileUpdateTest');
             Debug.writeln('Creating map of radius 1');
-            var map = HF.hexMap(1);
+            var map = HF.hexMapGenerator.raidus(1);
 
             Debug.writeln('Initial map state');
             map.debugPrint();
@@ -160,7 +160,8 @@ HF.tests = function()
             var player2 = new HF.hexTile(new HF.hexPoint(0, 10, -10), 1000, new HF.vector(), '#0000FF', 100);
             var player3 = new HF.hexTile(new HF.hexPoint(10, -10, 0), 1000, new HF.vector(), '#00FF00', 100);
             var neutralSource = new HF.hexTile(new HF.hexPoint(), 0, new HF.vector(), null, 300);
-            var map = HF.hexMap(10, [player1, player2, player3, neutralSource]);
+            var map = HF.hexMapGenerator.radius(10);
+            map.initialize([player1, player2, player3, neutralSource]);
 
             HF.state.initialize(map);
 
@@ -197,9 +198,11 @@ HF.tests = function()
 
         visualTest: function()
         {
-            var map = HF.hexMap(3, [new HF.hexTile(new HF.hexPoint(), 50)]);
-            var scene = HF.visual.scene(HF.visual.point(500,400));
+            var map = HF.hexMapGenerator.rectangle(5,5);
+            map.initialize([new HF.hexTile(new HF.hexPoint(), 50)]);
+            var scene = HF.visual.scene();
             scene.drawMap(map, '.mainPanel');
+            scene.clear();
         }
     };
 }();

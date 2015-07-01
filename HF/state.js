@@ -18,6 +18,9 @@ HF.state =
 
     bufferAction: function (args, action)
     {
+        if (!this.engine)
+            return;
+
         if (this.engine.actions === undefined)
             this.engine.actions = [];
 

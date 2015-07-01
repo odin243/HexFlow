@@ -9,7 +9,7 @@ HF.engine = function(hexMap, players)
     return {
         currentMap: hexMap,
         players: players,
-        scene: HF.visual.scene(HF.visual.point(500, 400)),
+        scene: HF.visual.scene(),
         keepRunning: true,
         //run is the main game loop
         run: function()
