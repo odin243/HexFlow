@@ -115,7 +115,7 @@ HF.hexTile.prototype =
                     if (!this.isSource)
                         dispersionAmount = dispersionAmount + (extraPower / 6);
 
-                    if (dispersionAmount !== 0)
+                    if (dispersionAmount !== 0 && direction.length() !== 0)
                     {
                         var dispersion = new HF.vector(direction, dispersionAmount);
 

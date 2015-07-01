@@ -138,8 +138,10 @@ HF.hexMap = function(radius, tileArray)
 
             if (neighbor != null || HF.config.useWalls !== true)
             {
-                var flowToPropogate = new HF.vector(neighborDirection, dispersion.magnitude);//, offset);
-                var updateTile = new HF.hexTile(neighborLocation, dispersion.magnitude, dispersion, tile.owner);
+                var mapEdgeLocation = this.projectToWall(tile.location, dispersion.direction);
+                var newFlowDirection = mapEdgeLocation.subtract(neighborLocation).toUnit();
+                var flowToPropogate = new HF.vector(newFlowDirection, dispersion.magnitude);//, offset);
+                var updateTile = new HF.hexTile(neighborLocation, dispersion.magnitude, flowToPropogate, tile.owner);
 
                 updateTiles.push(updateTile);
             }
@@ -150,6 +152,19 @@ HF.hexMap = function(radius, tileArray)
             }
 
             return updateTiles;
+        },
+
+        //This method projects a given direction from a given location to the edge of the map, and returns a location just beyond the map's edge.
+        projectToWall: function(location, direction)
+        {
+            var currentLocation = location;
+
+            while (currentLocation.length() < this.radius + 0.5)
+            {
+                currentLocation = currentLocation.add(direction);
+            }
+
+            return currentLocation.round();
         },
 
         debugPrint: function()
