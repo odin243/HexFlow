@@ -69,97 +69,44 @@ HF.vector.prototype = {
         return this.add(otherVector.scale(-1));
     },
 
-    findFirstFace: function ()
+    getFaceAffinities: function ()
     {
-        if (this.direction.q == 1)
-        {
-            if (this.direction.r > this.direction.s)
-                return HF.directions.face('ur');
-            else
-                return HF.directions.face('r');
-        }
-        if (this.direction.r == 1)
-        {
-            if (this.direction.s > this.direction.q)
-                return HF.directions.face('l');
-            else
-                return HF.directions.face('ul');
-        }
-        if (this.direction.s == 1)
-        {
-            if (this.direction.q > this.direction.r)
-                return HF.directions.face('lr');
-            else
-                return HF.directions.face('ll');
-        }
-        if (this.direction.q == -1)
-        {
-            if (this.direction.r > this.direction.s)
-                return HF.directions.face('ll');
-            else
-                return HF.directions.face('l');
-        }
-        if (this.direction.r == -1)
-        {
-            if (this.direction.s > this.direction.q)
-                return HF.directions.face('r');
-            else
-                return HF.directions.face('lr');
-        }
-        if (this.direction.s == -1)
-        {
-            if (this.direction.q > this.direction.r)
-                return HF.directions.face('ur');
-            else
-                return HF.directions.face('ul');
-        }
-        return new HF.hexPoint();
-    },
+        var faceAffinities = {};
 
-    findSecondFace: function ()
-    {
         if (this.direction.q == 1)
         {
-            if (this.direction.r > this.direction.s)
-                return HF.directions.face('r');
-            else
-                return HF.directions.face('ur');
+            faceAffinities.direction1 = HF.directions.face('ur');
+            faceAffinities.direction2 = HF.directions.face('r');
         }
         if (this.direction.r == 1)
         {
-            if (this.direction.s > this.direction.q)
-                return HF.directions.face('ul');
-            else
-                return HF.directions.face('l');
+            faceAffinities.direction1 = HF.directions.face('ul');
+            faceAffinities.direction2 = HF.directions.face('l');
         }
         if (this.direction.s == 1)
         {
-            if (this.direction.q > this.direction.r)
-                return HF.directions.face('ll');
-            else
-                return HF.directions.face('lr');
+            faceAffinities.direction1 = HF.directions.face('ll');
+            faceAffinities.direction2 = HF.directions.face('lr');
         }
         if (this.direction.q == -1)
         {
-            if (this.direction.r > this.direction.s)
-                return HF.directions.face('l');
-            else
-                return HF.directions.face('ll');
+            faceAffinities.direction1 = HF.directions.face('l');
+            faceAffinities.direction2 = HF.directions.face('ll');
         }
         if (this.direction.r == -1)
         {
-            if (this.direction.s > this.direction.q)
-                return HF.directions.face('lr');
-            else
-                return HF.directions.face('r');
+            faceAffinities.direction1 = HF.directions.face('r');
+            faceAffinities.direction2 = HF.directions.face('lr');
         }
         if (this.direction.s == -1)
         {
-            if (this.direction.q > this.direction.r)
-                return HF.directions.face('ul');
-            else
-                return HF.directions.face('ur');
+            faceAffinities.direction1 = HF.directions.face('ul');
+            faceAffinities.direction2 = HF.directions.face('ur');
         }
-        return new HF.hexPoint();
+
+        faceAffinities.affinity1 = 1 - this.direction.subtract(faceAffinities.direction1).length();
+        faceAffinities.affinity2 = 1 - this.direction.subtract(faceAffinities.direction2).length();
+
+        return faceAffinities;
     }
 };
