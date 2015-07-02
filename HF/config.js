@@ -19,6 +19,8 @@ HF.config =
     //0 to 1; 0 allows standing liquid, 1 disperses all standing liquid.
     standingFlowFactor: 1,
 
+    sourcesAbsorbPower: false,
+
     //If true, nothing will stop power from flowing off the side of the map.
     useWalls: true,
 

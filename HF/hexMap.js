@@ -172,8 +172,16 @@ HF.hexMap = function(tileArray)
             //var neighborDirection = neighborLocation.subtract(tile.location);
 
             var neighbor = this.getTileAtPoint(neighborLocation);
-
-            if (neighbor != null || HF.config.useWalls !== true)
+            
+            if (neighbor == null && HF.config.useWalls === true)
+            {
+                var bounceAmount = dispersion.magnitude * 0.5;
+                updateTiles.push(new HF.hexTile(tile.location, bounceAmount, new HF.vector(dispersion.direction.invert(), bounceAmount), tile.owner));
+            }
+            else if (neighbor != null && neighbor.isSource && HF.config.sourcesAbsorbPower === false)
+            {
+            }
+            else
             {
                 var mapEdgeLocation = this.projectToWall(tile.location, dispersion.direction);
                 var newFlowDirection = mapEdgeLocation.subtract(neighborLocation).toUnit();
@@ -181,11 +189,6 @@ HF.hexMap = function(tileArray)
                 var updateTile = new HF.hexTile(neighborLocation, dispersion.magnitude, flowToPropogate, tile.owner);
 
                 updateTiles.push(updateTile);
-            }
-            else
-            {
-                var bounceAmount = dispersion.magnitude * 0.5;
-                updateTiles.push(new HF.hexTile(tile.location, bounceAmount, new HF.vector(dispersion.direction.invert(), bounceAmount), null));
             }
 
             return updateTiles;
