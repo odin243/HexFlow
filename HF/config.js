@@ -56,5 +56,8 @@ HF.config =
     hexFlowColor: '#000000',
 
     gridBackgroundColor: '#000000',
+
+    gridBorderColor: '#111111',
+
     debug: false
 };

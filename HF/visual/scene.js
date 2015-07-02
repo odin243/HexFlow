@@ -185,7 +185,7 @@ HF.visual.scene = function(flatTop)
                 id: hexTile.getIdentifier(),
                 tileId: hexTile.getIdentifier(),
                 color: this.getHexPartColor(hexTile),
-                border: 'black',
+                border: HF.config.gridBorderColor || 'none',
                 borderWidth: hexTile.isSource ? HF.config.sourceBorderWidth || 3 : HF.config.hexBorderWidth,
                 points: this.makeHexShapeString(hexTile.location),
                 power: hexTile.power
@@ -200,7 +200,7 @@ HF.visual.scene = function(flatTop)
                         tileId: hexTile.getIdentifier(),
                         faceIndex: i,
                         color: this.getHexPartColor(hexTile, i),
-                        border: 'none',
+                        border: HF.config.gridBorderColor || 'none',
                         points: this.makeSideBorderShapeString(hexTile.location, i),
                         power: hexTile.faceFlows[i]
                     });
