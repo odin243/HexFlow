@@ -166,7 +166,10 @@ HF.hexTile.prototype =
             }
 
             if (newPower <= 0)
+            {
+                newPower = 0;
                 newOwner = null;
+            }
         }
         else
         {
@@ -182,6 +185,9 @@ HF.hexTile.prototype =
                 }
             }
 
+            if (biggestPlayer === 'null')
+                biggestPlayer = null;
+
             newOwner = biggestPlayer;
 
             for (var playerKey in playerPower)
@@ -190,7 +196,10 @@ HF.hexTile.prototype =
             }
 
             if (newPower <= 0)
+            {
+                newPower = 0;
                 newOwner = null;
+            }
         }
 
         newFlow = newFlow.scale(HF.config.flowMagnitudeSustain);
