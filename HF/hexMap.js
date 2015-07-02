@@ -199,9 +199,9 @@ HF.hexMap = function(tileArray)
             while (true)
             {
                 var nextLocation = currentLocation.add(direction);
-                if(this.getTileAtPoint(nextLocation) == undefined)
-                    break;
                 currentLocation = nextLocation;
+                if (this.getTileAtPoint(currentLocation) == undefined)
+                    break;
             }
 
             return currentLocation.round();
