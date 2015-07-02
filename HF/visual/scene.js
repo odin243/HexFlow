@@ -307,6 +307,14 @@ HF.visual.scene = function(flatTop)
                 function(polyData) {
                     return polyData.id;
                 });
+
+            var tip = d3.tip()
+                .attr('class', 'd3-tip')
+                .html(function(polyData) {
+                    return '<p>' + polyData.id + '</p><p>' + polyData.power + '</p>';
+                });
+
+            svgSelection.call(tip);
             
             //Draw each hex part
             polygonSelection.enter()
@@ -318,7 +326,9 @@ HF.visual.scene = function(flatTop)
                     return polyData.points;
                 })
                 .on('mousedown', HF.input.onPolygonMouseDown.bind(HF.input))
-                .on('mouseup', HF.input.onPolygonMouseUp.bind(HF.input));
+                .on('mouseup', HF.input.onPolygonMouseUp.bind(HF.input))
+                .on('mouseover', tip.show)
+                .on('mouseout', tip.hide);
 
             //Next update the tile attributes
             polygonSelection.attr('fill', function(polyData) {
