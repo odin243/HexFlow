@@ -5,10 +5,10 @@ window.HF = window.HF || {};
 //It is essentially a model for the game grid.
 HF.state = 
 {
-    initialize: function (map)
+    initialize: function (level)
     {
-        this.map = map;
-        this.engine = HF.engine(map, []);
+        this.level = level;
+        this.engine = HF.engine(level, []);
     },
 
     start: function ()

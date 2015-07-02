@@ -161,9 +161,9 @@ HF.tests = function()
             var player3 = new HF.hexTile(new HF.hexPoint(10, -10, 0), 1000, new HF.vector(), '#00FF00', 100);
             var neutralSource = new HF.hexTile(new HF.hexPoint(), 0, new HF.vector(), null, 300);
             var map = HF.hexMapGenerator.radius(10);
-            map.initialize([player1, player2, player3, neutralSource]);
+            var level = HF.level(map, [player1, player2, player3, neutralSource]);
 
-            HF.state.initialize(map);
+            HF.state.initialize(level);
 
             if (HF.config.debug === true)
             {
