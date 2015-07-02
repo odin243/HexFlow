@@ -221,6 +221,8 @@ HF.hexTile.prototype =
 
         if (this.flowColor[faceString] == undefined)
         {
+            this.faceFlows = this.faceFlows || [];
+
             var faceUpdates = this.updates;
             if (faceUpdates == undefined)
                 return '#FFFFFF';
@@ -230,8 +232,7 @@ HF.hexTile.prototype =
             var magnitudeTowardsFace = updatesTowardsFace.reduce(function(magnitude, updateTile) {
                 return magnitude + updateTile.flow.magnitude;
             }, 0);
-
-            this.faceFlows = this.faceFlows || [];
+            
             this.faceFlows[faceIndex] = magnitudeTowardsFace;
                     
             var maxMagnitude = HF.config.hexFullFlow || 100;

@@ -113,7 +113,7 @@ HF.tests = function()
         {
             Debug.writeln('tileUpdateTest');
             Debug.writeln('Creating map of radius 1');
-            var map = HF.hexMapGenerator.raidus(1);
+            var map = HF.hexMapGenerator.radius(1);
 
             Debug.writeln('Initial map state');
             map.debugPrint();
