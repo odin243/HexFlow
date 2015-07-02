@@ -163,9 +163,11 @@ HF.tests = function()
             var map = HF.hexMapGenerator.radius(10);
             var level = HF.level(map, [player1, player2, player3, neutralSource]);
 
-            var level2 = HF.level(HF.hexMapGenerator.radius(2), [new HF.hexTile(new HF.hexPoint(), 1, new HF.vector(HF.directions.face('r'), 1), '#FF0000', 1)]);
+            var level2 = HF.level(HF.hexMapGenerator.radius(10),
+            [new HF.hexTile(new HF.hexPoint(0, 0, 0), 1, new HF.vector(HF.directions.face('r'), 1), '#FF0000', 1)]);//,
+                //new HF.hexTile(new HF.hexPoint(7,-11,4), 1, new HF.vector(HF.directions.face('r'), 1), '#FF00FF', 1)]);
 
-            HF.state.initialize(level);
+            HF.state.initialize(level2);
 
             if (HF.config.debug === true)
             {
