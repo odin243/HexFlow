@@ -127,7 +127,7 @@ HF.hexMap = function(tileArray)
                     var dispersion = dispersedVectors[i];
 
                     //If we're not dispersing in this direction, no need to calculate an update vector
-                    if (dispersion.direction.length() === 0 || dispersion.magnitude === 0)
+                    if (dispersion.direction.length() === 0 || dispersion.magnitude < 0.0001)
                         continue;
 
                     var updatesForDispersion = [];
@@ -200,7 +200,7 @@ HF.hexMap = function(tileArray)
             {
                 var nextLocation = currentLocation.add(direction);
                 currentLocation = nextLocation;
-                if (this.getTileAtPoint(currentLocation) == undefined)
+                if (this.getTileAtPoint(currentLocation.round()) == undefined)
                     break;
             }
 
