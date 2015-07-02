@@ -18,6 +18,9 @@ HF.engine = function(level, players)
             if (this.iterateInterval || this.renderInterval)
                 this.stop();
 
+            if (this.scene)
+                this.scene.clear();
+
             var engine = this;
             var frameRate = HF.config.frameRate || 30;
             var turnRate = HF.config.turnRate || 100;
