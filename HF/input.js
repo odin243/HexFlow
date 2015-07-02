@@ -8,6 +8,17 @@ HF.input =
         HF.input.mouseDownLocation = tile.tileId;
     },
 
+    onPolygonMouseMove: function (tile, index)
+    {
+        if (HF.input.mouseDownLocation === undefined)
+            return;
+
+        if (HF.input.mouseDownLocation !== tile.tileId)
+        {
+            HF.state.bufferAction({ source: HF.input.mouseDownLocation, destination: tile.tileId }, this.assignDirection);
+        }
+    },
+
     onPolygonMouseUp: function (tile, index)
     {
         if (HF.input.mouseDownLocation === undefined)
@@ -21,6 +32,8 @@ HF.input =
         {
             HF.state.bufferAction({ source: HF.input.mouseDownLocation, destination: tile.tileId }, this.assignDirection);
         }
+
+        HF.input.mouseDownLocation = undefined;
     },
 
     clearDirection: function (args, map)

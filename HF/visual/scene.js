@@ -325,7 +325,11 @@ HF.visual.scene = function(flatTop)
                 .attr('points', function(polyData) {
                     return polyData.points;
                 })
+                .on('touchstart', HF.input.onPolygonMouseDown.bind(HF.input))
+                .on('touchmove', HF.input.onPolygonMouseMove.bind(HF.input))
+                .on('touchend', HF.input.onPolygonMouseUp.bind(HF.input))
                 .on('mousedown', HF.input.onPolygonMouseDown.bind(HF.input))
+                .on('mousemove', HF.input.onPolygonMouseMove.bind(HF.input))
                 .on('mouseup', HF.input.onPolygonMouseUp.bind(HF.input))
                 .on('mouseover', tip.show)
                 .on('mouseout', tip.hide);
