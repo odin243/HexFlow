@@ -68,6 +68,7 @@
     <Content Include="HF\hexTileDictionary.js" />
     <Content Include="HF\input.js" />
     <Content Include="HF\level.js" />
+    <Content Include="HF\levelManager.js" />
     <Content Include="HF\state.js" />
     <Content Include="HF\tests.js" />
     <Content Include="HF\visual\point.js" />
